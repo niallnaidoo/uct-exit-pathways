@@ -221,3 +221,6 @@
 .app-brand-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .app-crest { height: 34px; width: auto; flex: none; display: block; }
 .ms-crest { height: 34px; width: auto; display: block; }
+
+/* Raleway defaults to old-style figures; use lining numerals for stats and tables. */
+body, button, input, select, textarea { font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; }

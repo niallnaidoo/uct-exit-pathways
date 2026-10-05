@@ -45,8 +45,9 @@
   --info: #4d6884;             /* steel-blue (matches accent-deep) */
 
   /* Type */
-  --serif: "Fraunces", "GT Sectra", "Tiempos Headline", Georgia, serif;
-  --sans: "Inter Tight", "Söhne", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  /* UCT brand typeface: Raleway for everything (display + body). */
+  --serif: "Raleway", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --sans: "Raleway", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   /* Geometry — tighter radii, more "product" less "publication". */

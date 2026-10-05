@@ -41,3 +41,6 @@ body { font-family: var(--sans); color: var(--ink); }
 }
 .lg-crest { height: 46px; width: auto; display: block; }
 .lg-logo { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 0 26px; }
+
+/* Raleway defaults to old-style figures; use lining numerals for stats and tables. */
+body, button, input, select, textarea { font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; }
