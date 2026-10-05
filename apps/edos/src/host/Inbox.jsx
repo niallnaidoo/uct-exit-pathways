@@ -1,11 +1,11 @@
 /** EdOS — inbox: everything the Careers Service and your mentor sent you. */
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useEdos, markRead } from './store.js';
-import { Icon } from './ui.jsx';
-import { timeAgo } from '../../../packages/bridge/describe.js';
+import { useEdos, markRead } from '../pathways/store.js';
+import { Icon } from '../pathways/ui.jsx';
+import { timeAgo } from '../../../../packages/bridge/describe.js';
 
-const ICON = { support: 'spark', mentor: 'users', message: 'send', meeting: 'clock', opportunity: 'briefcase' };
+const ICON = { support: 'spark', mentor: 'users', message: 'send', meeting: 'clock', opportunity: 'briefcase', sent: 'send', application: 'flag' };
 
 export function Inbox() {
   const { inbox } = useEdos();

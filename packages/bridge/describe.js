@@ -3,7 +3,7 @@
  * the integration showcase, so a person can read the conversation between the
  * systems without decoding JSON.
  */
-import { pathwayMeta, kindMeta, interventionMeta, destinationMeta } from './vocab.js';
+import { pathwayMeta, kindMeta, interventionMeta, destinationMeta, stageMeta } from './vocab.js';
 
 export function describe(e, model) {
   const p = e.payload ?? {};
@@ -17,6 +17,13 @@ export function describe(e, model) {
       return `${who} chose ${pathwayMeta(p.primary)?.label ?? p.primary}${p.backup ? ` (backup: ${pathwayMeta(p.backup)?.label})` : ''}`;
     case 'opportunity.published':
       return `Published: ${p.title} — ${kindMeta(p.kind).label}`;
+    case 'opportunity.sent': {
+      const o = model?.opportunities?.[p.opportunityId];
+      const n = p.studentNumbers?.length ?? 0;
+      return `Careers sent ${o?.title ?? 'an opportunity'} to ${n} student${n === 1 ? '' : 's'}`;
+    }
+    case 'opportunities.viewed':
+      return `${who} checked opportunities`;
     case 'opportunity.closed':
       return `Closed: ${opp?.title ?? p.opportunityId}`;
     case 'opportunity.saved':
@@ -24,7 +31,7 @@ export function describe(e, model) {
     case 'application.submitted':
       return `${who} applied to ${opp?.title ?? 'an opportunity'}`;
     case 'application.updated':
-      return `${who}: ${opp?.title ?? 'application'} → ${p.status}`;
+      return `${who}: ${opp?.title ?? 'application'} → ${stageMeta(p.status).label}`;
     case 'mentorship.requested':
       return `${who} asked for an alumni mentor`;
     case 'mentorship.offer.made':

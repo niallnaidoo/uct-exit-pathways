@@ -35,10 +35,11 @@ Source of truth: `packages/bridge/contract.js`. Every event has the envelope:
 
 | Event | Payload | Careers uses it to… |
 |---|---|---|
-| `student.synced` | studentNumber, names, email, faculty, degree, yearOfStudy, stage, expectedGraduation, average, credits, status | Know the cohort without re-capturing anyone |
-| `pathway.declared` | primary, backup, readiness{}, interests[], note | Track the pathway mix; score unemployment risk |
+| `student.synced` | studentNumber, names, email, faculty, degree, yearOfStudy, stage, expectedGraduation, average, credits, status, nextTest, gradebook{recorded,due,total} | Know the cohort without re-capturing anyone; engagement dashboard |
+| `opportunities.viewed` | studentNumber | "Last checked opportunities" on the engagement dashboard |
+| `pathway.declared` | pathways[] (one or more), readiness{}, interests[], note | Track the pathway mix; score unemployment risk |
 | `opportunity.saved` | opportunityId, saved | Measure interest |
-| `application.submitted` / `application.updated` | applicationId, opportunityId, status | Track applications → offers → destinations |
+| `application.submitted` | applicationId, opportunityId, attachments{cv, coverLetter, transcript}, answers{linkedin} | Applicant appears in the employer's pipeline |
 | `mentorship.requested` | interests, skills, goals, languages, format | Create a mentee for matching (academic profile already known) |
 | `mentorship.offer.responded` | matchId, accept | Activate the match (nothing starts until the student agrees) |
 | `intervention.updated` | interventionId, status booked/done/declined | Close the loop on support |
@@ -48,13 +49,15 @@ Source of truth: `packages/bridge/contract.js`. Every event has the envelope:
 
 | Event | Payload | EdOS uses it to… |
 |---|---|---|
-| `opportunity.published` / `opportunity.closed` | full opportunity incl. faculties, stages, minAverage, closingDate | Show it to eligible students — EdOS checks eligibility against live marks |
+| `opportunity.published` / `opportunity.closed` | full opportunity incl. faculties, degrees (e.g. BCom), years, minAverage, requirements, employerId | Show it to eligible students — EdOS checks eligibility against the live record |
+| `opportunity.sent` | opportunityId, studentNumbers[], message | "Sent to you" in the student's EdOS |
 | `intervention.assigned` | type, title, message, dueDate | Put a support task on the student's home page |
 | `mentorship.offer.made` | matchId, mentor **public** profile, score | Let the student accept or decline |
 | `mentorship.match.updated` / `mentorship.milestone.updated` | status / milestone key | Keep the student's mentorship view current |
 
-**Both directions:** `mentorship.message.sent`, `mentorship.meeting.scheduled`
-(the mentor works in Careers, the student in EdOS — one conversation).
+**Both directions:** `application.updated` (employer/Careers move the stage —
+shortlisted, interview, offer; the student accepts or withdraws),
+`mentorship.message.sent`, `mentorship.meeting.scheduled`.
 
 The bus refuses an event from the wrong system (`publish` checks `from` against
 the contract), as the production integration service should.
@@ -85,7 +88,7 @@ event that carries personal data, 24-month retention then anonymise.
 
 ```
 packages/bridge/   contract.js · bus.js · project.js · vocab.js · describe.js · demo/
-apps/edos/         EdOS UCT edition (student + graduate views)
-apps/careers/      Careers Service console, alumni mentor sign-up + dashboard
-apps/showcase/     Side-by-side demo with the live bus
+apps/edos/src/pathways/   EdOS module (see EDOS-INTEGRATION.md)
+apps/careers/      Careers console, employer portal, alumni mentor sign-up + dashboard
+apps/login/        shared sign-in · apps/split/ side-by-side view
 ```

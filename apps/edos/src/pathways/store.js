@@ -8,13 +8,13 @@
  * requests, destinations) leaves as events. Nothing else crosses over.
  */
 import { useEffect, useSyncExternalStore } from 'react';
-import { publish, readLog, subscribe, newId, resetDemo as resetBus } from '../../../packages/bridge/bus.js';
-import { project, eligibility, isOpen, daysUntil } from '../../../packages/bridge/project.js';
-import { demoRoster, syncPayload } from '../../../packages/bridge/demo/roster.js';
-import { kindMeta } from '../../../packages/bridge/vocab.js';
+import { publish, readLog, subscribe, newId, resetDemo as resetBus } from '../../../../packages/bridge/bus.js';
+import { project, eligibility, isOpen, daysUntil } from '../../../../packages/bridge/project.js';
+import { demoRoster, syncPayload } from '../../../../packages/bridge/demo/roster.js';
+import { kindMeta } from '../../../../packages/bridge/vocab.js';
+import { getSession, setSession } from '../../../../packages/demo-auth/session.js';
 
 const FROM = 'edos';
-const PERSONA_KEY = 'uct-edos-persona';
 const PREFS_KEY = 'uct-edos-v1';
 export const DEFAULT_PERSONA = 'CELNOM010';
 
@@ -39,33 +39,24 @@ function hookBus() {
   subscribe(bump);
 }
 
-/* ── Persona (demo only — production is UCT single sign-on) ── */
+/* ── Who is signed in ──
+ * INTEGRATION: in EdOS replace this with `useAuth().user` and look the student
+ * up by their student number. `?as=` is a demo-only "view as student" link the
+ * Careers console uses. */
 export function getPersona() {
   const fromUrl = new URLSearchParams(window.location.hash.split('?')[1] ?? '').get('as');
-  if (fromUrl && ROSTER.some((s) => s.studentNumber === fromUrl)) {
-    try {
-      localStorage.setItem(PERSONA_KEY, fromUrl);
-    } catch {
-      /* ignore */
-    }
+  const student = (sn) => ROSTER.find((s) => s.studentNumber === sn);
+  if (fromUrl && student(fromUrl)) {
+    const s = student(fromUrl);
+    const cur = getSession('edos');
+    if (cur?.id !== fromUrl)
+      setSession({ role: s.status === 'graduated' ? 'graduate' : 'student', id: fromUrl, name: `${s.firstName} ${s.lastName}` });
     return fromUrl;
   }
-  try {
-    return localStorage.getItem(PERSONA_KEY) || DEFAULT_PERSONA;
-  } catch {
-    return DEFAULT_PERSONA;
-  }
+  const sess = getSession('edos');
+  return sess && (sess.role === 'student' || sess.role === 'graduate') && student(sess.id) ? sess.id : null;
 }
-export function setPersona(sn) {
-  try {
-    localStorage.setItem(PERSONA_KEY, sn);
-  } catch {
-    /* ignore */
-  }
-  // Drop any ?as= so the choice sticks.
-  window.location.hash = window.location.hash.split('?')[0] || '#/';
-  bump();
-}
+export const isSignedIn = () => !!getPersona();
 
 /* ── Notification read-state (private to EdOS) ── */
 function prefs() {
@@ -84,13 +75,14 @@ export function markRead(ids) {
 
 /* ── The student's view, rebuilt from their record + the event stream ── */
 function buildView(sn) {
-  const me = ROSTER.find((s) => s.studentNumber === sn) ?? ROSTER[0];
+  const me = ROSTER.find((s) => s.studentNumber === sn) ?? ROSTER.find((s) => s.studentNumber === DEFAULT_PERSONA);
   const log = readLog();
   const m = project(log);
   const decl = m.pathways[me.studentNumber] ?? null;
   const saved = m.saves[me.studentNumber] ?? {};
   const applications = Object.values(m.applications).filter((a) => a.studentNumber === me.studentNumber);
   const appliedTo = Object.fromEntries(applications.map((a) => [a.opportunityId, a]));
+  const sentTo = Object.fromEntries((m.sent[me.studentNumber] ?? []).map((x) => [x.opportunityId, x]));
 
   const opportunities = Object.values(m.opportunities)
     .filter(isOpen)
@@ -99,11 +91,12 @@ function buildView(sn) {
       const pathway = kindMeta(o.kind).pathway;
       // "For you" ranking: eligible first, then your pathway, then closing soonest.
       let rank = el.ok ? 100 : 0;
-      if (decl?.primary === pathway) rank += 40;
-      else if (decl?.backup === pathway) rank += 20;
+      if (sentTo[o.id]) rank += 60;
+      if (decl?.pathways?.[0] === pathway) rank += 40;
+      else if (decl?.pathways?.includes(pathway)) rank += 30;
       if (decl?.interests?.some((i) => o.summary?.includes(i) || o.title.includes(i))) rank += 5;
       if (o.closingDate) rank += Math.max(0, 30 - daysUntil(o.closingDate)) / 10;
-      return { ...o, pathway, eligibility: el, saved: !!saved[o.id], application: appliedTo[o.id] ?? null, rank };
+      return { ...o, pathway, eligibility: el, saved: !!saved[o.id], application: appliedTo[o.id] ?? null, sent: sentTo[o.id] ?? null, rank };
     })
     .sort((a, b) => b.rank - a.rank);
 
@@ -132,6 +125,7 @@ function buildView(sn) {
     offers: offers.map(withThread),
     match: withThread(activeMatch),
     destination: m.destinations[me.studentNumber] ?? null,
+    lastViewedOpportunities: m.lastViewed[me.studentNumber] ?? null,
     timeline: m.timeline[me.studentNumber] ?? [],
   };
   view.inbox = inboxFor(view, m);
@@ -143,17 +137,21 @@ function inboxFor(v, m) {
   const read = prefs().read;
   const items = [];
   for (const i of v.interventions)
-    items.push({ id: `n-${i.id}`, at: i.assignedAt, kind: 'support', title: i.title, body: i.message, to: '/', from: i.by });
+    items.push({ id: `n-${i.id}`, at: i.assignedAt, kind: 'support', title: i.title, body: i.message, to: '/student/home', from: i.by });
   for (const o of v.offers)
-    items.push({ id: `n-${o.id}`, at: o.offeredAt, kind: 'mentor', title: `${o.mentor.firstName} ${o.mentor.lastName} offered to mentor you`, body: `${o.mentor.role} at ${o.mentor.organisation}`, to: '/mentor', from: 'Alumni Mentorship' });
+    items.push({ id: `n-${o.id}`, at: o.offeredAt, kind: 'mentor', title: `${o.mentor.firstName} ${o.mentor.lastName} offered to mentor you`, body: `${o.mentor.role} at ${o.mentor.organisation}`, to: '/student/mentor', from: 'Alumni Mentorship' });
   for (const msg of v.match?.messages ?? [])
     if (msg.from === 'mentor')
-      items.push({ id: `n-${msg.id}`, at: msg.at, kind: 'message', title: `Message from ${v.match.mentor.firstName}`, body: msg.text, to: '/mentor', from: 'Your mentor' });
+      items.push({ id: `n-${msg.id}`, at: msg.at, kind: 'message', title: `Message from ${v.match.mentor.firstName}`, body: msg.text, to: '/student/mentor', from: 'Your mentor' });
   for (const mt of v.match?.meetings ?? [])
     if (mt.bookedBy === 'mentor')
-      items.push({ id: `n-${mt.id}`, at: mt.createdAt, kind: 'meeting', title: `${v.match.mentor.firstName} booked a meeting`, body: `${mt.date} at ${mt.time} · ${mt.format}${mt.agenda ? ` — ${mt.agenda}` : ''}`, to: '/mentor', from: 'Your mentor' });
-  for (const o of v.opportunities.filter((o) => o.eligibility.ok && (o.pathway === v.decl?.primary || !v.decl)).slice(0, 4))
-    items.push({ id: `n-opp-${o.id}`, at: o.publishedAt, kind: 'opportunity', title: `New for you: ${o.title}`, body: `${o.organisation}${o.closingDate ? ` · closes in ${daysUntil(o.closingDate)} days` : ''}`, to: '/opportunities', from: 'Careers Service' });
+      items.push({ id: `n-${mt.id}`, at: mt.createdAt, kind: 'meeting', title: `${v.match.mentor.firstName} booked a meeting`, body: `${mt.date} at ${mt.time} · ${mt.format}${mt.agenda ? ` — ${mt.agenda}` : ''}`, to: '/student/mentor', from: 'Your mentor' });
+  for (const o of v.opportunities.filter((o) => o.sent))
+    items.push({ id: `n-sent-${o.id}`, at: o.sent.at, kind: 'sent', title: `Sent to you: ${o.title}`, body: o.sent.message, to: `/student/opportunities?open=${o.id}`, from: o.sent.sentBy });
+  for (const a of v.applications.filter((a) => a.status !== 'submitted' && a.history?.at(-1)?.by !== 'student'))
+    items.push({ id: `n-app-${a.id}-${a.status}`, at: a.updatedAt, kind: 'application', title: `${a.opportunity?.title ?? 'Application'}: ${a.status === 'interview' ? 'you’re invited to interview' : a.status === 'offer' ? 'you have an offer!' : a.status}`, body: a.opportunity?.organisation ?? '', to: '/student/opportunities', from: 'Careers Service' });
+  for (const o of v.opportunities.filter((o) => !o.sent && o.eligibility.ok && (!v.decl || v.decl.pathways.includes(o.pathway))).slice(0, 4))
+    items.push({ id: `n-opp-${o.id}`, at: o.publishedAt, kind: 'opportunity', title: `New for you: ${o.title}`, body: `${o.organisation}${o.closingDate ? ` · closes in ${daysUntil(o.closingDate)} days` : ''}`, to: '/student/opportunities', from: 'Careers Service' });
   return items
     .map((n) => ({ ...n, unread: !read[n.id] }))
     .sort((a, b) => b.at.localeCompare(a.at));
@@ -180,16 +178,40 @@ const emit = (type, payload) => {
   bump();
   return e;
 };
-const me = () => ROSTER.find((s) => s.studentNumber === getPersona()) ?? ROSTER[0];
+const me = () => ROSTER.find((s) => s.studentNumber === getPersona()) ?? ROSTER.find((s) => s.studentNumber === DEFAULT_PERSONA);
 
-export const declarePathway = ({ primary, backup, readiness, interests, note }) =>
-  emit('pathway.declared', { studentNumber: me().studentNumber, primary, backup: backup || null, readiness, interests, note: note?.trim() || '' });
+export const declarePathway = ({ pathways, readiness, interests, note }) =>
+  emit('pathway.declared', {
+    studentNumber: me().studentNumber,
+    pathways,
+    primary: pathways[0],
+    backup: pathways[1] ?? null,
+    readiness,
+    interests,
+    note: note?.trim() || '',
+  });
 
 export const toggleSave = (opportunityId, saved) =>
   emit('opportunity.saved', { studentNumber: me().studentNumber, opportunityId, saved });
 
-export const applyTo = (opportunityId) =>
-  emit('application.submitted', { applicationId: newId('app'), studentNumber: me().studentNumber, opportunityId });
+/** attachments: { cv, coverLetter } file names; EdOS adds the transcript itself. */
+export const applyTo = (opportunityId, { attachments = {}, linkedin = '' } = {}) =>
+  emit('application.submitted', {
+    applicationId: newId('app'),
+    studentNumber: me().studentNumber,
+    opportunityId,
+    attachments: { ...attachments, transcript: 'EdOS academic transcript' },
+    answers: linkedin ? { linkedin } : {},
+  });
+
+/** Engagement signal for Careers — at most once every 10 minutes per student. */
+export function markOpportunitiesViewed() {
+  const sn = getPersona();
+  if (!sn) return;
+  const last = project(readLog()).lastViewed[sn];
+  if (last && Date.now() - new Date(last).getTime() < 10 * 60000) return;
+  emit('opportunities.viewed', { studentNumber: sn });
+}
 
 export const updateApplication = (applicationId, status) =>
   emit('application.updated', { applicationId, studentNumber: me().studentNumber, status });
@@ -219,3 +241,8 @@ export function resetDemo() {
   resetBus();
   bump();
 }
+
+/** Students also have CV/cover letter on file in EdOS (profile documents) — demo names. */
+export const savedDocuments = (s) => ({
+  cv: `${s.firstName}_${s.lastName}_CV.pdf`,
+});

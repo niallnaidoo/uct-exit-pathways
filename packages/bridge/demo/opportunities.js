@@ -8,14 +8,23 @@ const inDays = (n) => {
   return d.toISOString().slice(0, 10);
 };
 
+import { EMPLOYER_OF } from './employers.js';
+
 const opp = (id, kind, f) => ({
   id: `opp-${id}`,
   kind,
   faculties: [],
+  degrees: [],
+  years: [],
   stages: [],
   minAverage: null,
   location: 'Cape Town',
+  workMode: 'On-site',
+  positions: null,
   uct: false,
+  employerId: EMPLOYER_OF[`opp-${id}`] ?? null,
+  postedBy: EMPLOYER_OF[`opp-${id}`] ? 'employer' : 'careers',
+  requirements: { cv: true, coverLetter: false, transcript: true, linkedin: false },
   ...f,
 });
 
@@ -28,20 +37,27 @@ export function demoOpportunities() {
       location: 'Johannesburg / Cape Town',
       summary: 'Two-year rotational programme across risk, treasury and corporate banking. Full salary, study support for CFA level I.',
       faculties: ['Commerce', 'Science'],
-      stages: ['Final year', 'Honours'],
+      degrees: ['BCom', 'BBusSc', 'BSc', 'BSc (Hons)'],
+      years: ['3rd year', '4th year +', 'Honours'],
       minAverage: 65,
       closingDate: inDays(18),
       value: 'R380 000 starting salary',
+      positions: 25,
+      workMode: 'Hybrid',
+      requirements: { cv: true, coverLetter: true, transcript: true, linkedin: true },
     }),
     opp('atlantic-eng', 'gradprog', {
       title: 'Candidate Engineer Programme',
       organisation: 'Atlantic Infrastructure (sample)',
       summary: 'Structured ECSA-aligned training for civil and electrical graduates, with site rotations across the Western Cape.',
       faculties: ['Engineering & the Built Environment'],
-      stages: ['Final year', 'Honours'],
+      degrees: ['BSc (Eng)'],
+      years: ['4th year +', 'Honours'],
       minAverage: 60,
       closingDate: inDays(25),
       value: 'R420 000 starting salary',
+      positions: 12,
+      requirements: { cv: true, coverLetter: true, transcript: true, linkedin: false },
     }),
     opp('kasi-dev', 'job', {
       title: 'Junior Software Engineer',
@@ -52,6 +68,9 @@ export function demoOpportunities() {
       stages: ['Final year', 'Honours', 'Masters (career change)'],
       closingDate: inDays(12),
       value: 'R360 000 – R420 000',
+      positions: 3,
+      workMode: 'Hybrid',
+      requirements: { cv: true, coverLetter: false, transcript: true, linkedin: true },
     }),
     opp('hollard-articles', 'job', {
       title: 'Candidate Attorney (Articles) 2027',
@@ -162,10 +181,13 @@ export function demoOpportunities() {
       organisation: 'Ubuntu Bank (sample)',
       summary: 'Covers Honours tuition for students intending to join the bank’s graduate programme.',
       faculties: ['Commerce'],
-      stages: ['Penultimate year', 'Final year'],
+      degrees: ['BCom', 'BBusSc'],
+      years: ['2nd year', '3rd year'],
       minAverage: 70,
       closingDate: inDays(16),
       value: 'Full tuition',
+      positions: 10,
+      requirements: { cv: true, coverLetter: true, transcript: true, linkedin: false },
     }),
     opp('cape-futures', 'scholarship', {
       title: 'Cape Futures Leadership Scholarship',

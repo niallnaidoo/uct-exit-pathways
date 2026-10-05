@@ -1,6 +1,6 @@
 /** EdOS UI primitives — icons and small shared pieces (EdOS design system). */
-import { pathwayMeta, kindMeta } from '../../../packages/bridge/vocab.js';
-import { daysUntil } from '../../../packages/bridge/project.js';
+import { pathwayMeta, kindMeta } from '../../../../packages/bridge/vocab.js';
+import { daysUntil } from '../../../../packages/bridge/project.js';
 
 const P = {
   home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',
@@ -19,6 +19,9 @@ const P = {
   link: 'M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1',
   send: 'M4 12 20 4l-6 16-3-7z',
   grad: 'M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5',
+  // Same names as EdOS components/Icon.tsx, so nav entries port 1:1.
+  target: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 12h.01',
+  star: 'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z',
 };
 
 export function Icon({ name, size = 16, style }) {

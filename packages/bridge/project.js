@@ -1,3 +1,5 @@
+import { degreeMatches, yearTargetOf } from './vocab.js';
+
 /**
  * Projection — folds the event stream into a read model.
  *
@@ -20,6 +22,8 @@ export function emptyModel() {
     messages: [], // chronological
     interventions: {}, // interventionId → intervention
     destinations: {}, // studentNumber → destination report
+    sent: {}, // studentNumber → [{ opportunityId, message, sentBy, at }] (Careers hand-picked)
+    lastViewed: {}, // studentNumber → when they last opened Opportunities in EdOS
     timeline: {}, // studentNumber → events touching them (newest last)
   };
 }
@@ -35,9 +39,19 @@ export function apply(m, e) {
     case 'student.synced':
       m.students[p.studentNumber] = { ...m.students[p.studentNumber], ...p, syncedAt: e.at };
       break;
-    case 'pathway.declared':
-      m.pathways[p.studentNumber] = { ...p, declaredAt: e.at, revisions: (m.pathways[p.studentNumber]?.revisions ?? 0) + 1 };
+    case 'pathway.declared': {
+      // `pathways` (several allowed, e.g. work AND further study); primary/backup kept for older events.
+      const list = p.pathways?.length ? p.pathways : [p.primary, p.backup].filter(Boolean);
+      m.pathways[p.studentNumber] = {
+        ...p,
+        pathways: list,
+        primary: list[0],
+        backup: list[1] ?? null,
+        declaredAt: e.at,
+        revisions: (m.pathways[p.studentNumber]?.revisions ?? 0) + 1,
+      };
       break;
+    }
     case 'opportunity.published':
       m.opportunities[p.id] = { ...p, publishedAt: e.at, closed: false };
       break;
@@ -54,16 +68,33 @@ export function apply(m, e) {
         id: p.applicationId,
         studentNumber: p.studentNumber,
         opportunityId: p.opportunityId,
+        note: p.note ?? '',
+        answers: p.answers ?? {},
+        attachments: p.attachments ?? {},
         status: 'submitted',
         submittedAt: e.at,
         updatedAt: e.at,
+        history: [{ status: 'submitted', at: e.at, by: 'student' }],
       };
       break;
     case 'application.updated': {
       const a = m.applications[p.applicationId];
-      if (a) Object.assign(a, { status: p.status, updatedAt: e.at });
+      if (a) {
+        Object.assign(a, { status: p.status, updatedAt: e.at });
+        a.history = [...(a.history ?? []), { status: p.status, at: e.at, by: e.from === 'careers' ? p.by || 'Careers Service' : 'student' }];
+      }
       break;
     }
+    case 'opportunity.sent':
+      for (const sn of p.studentNumbers ?? []) {
+        m.sent[sn] = (m.sent[sn] ?? []).filter((x) => x.opportunityId !== p.opportunityId);
+        m.sent[sn].push({ opportunityId: p.opportunityId, message: p.message, sentBy: p.sentBy, at: e.at });
+        addTimeline(m, sn, e);
+      }
+      break;
+    case 'opportunities.viewed':
+      m.lastViewed[p.studentNumber] = e.at;
+      break;
     case 'mentorship.requested':
       m.mentees[p.studentNumber] = { ...p, requestedAt: e.at };
       break;
@@ -128,7 +159,8 @@ export function apply(m, e) {
   }
   // Index the event against the student it concerns (directly or via a match).
   const sn = p.studentNumber ?? m.matches[p.matchId]?.studentNumber ?? m.applications[p.applicationId]?.studentNumber;
-  if (e.type !== 'opportunity.published') addTimeline(m, sn, e);
+  if (!['opportunity.published', 'opportunity.sent', 'opportunities.viewed', 'student.synced'].includes(e.type) || (e.type === 'student.synced' && !m.timeline[sn]))
+    addTimeline(m, sn, e);
   return m;
 }
 
@@ -148,7 +180,16 @@ export function eligibility(opp, student) {
     ok = false;
     reasons.push(`For ${opp.faculties.join(', ')} students`);
   }
-  if (opp.stages?.length && !opp.stages.includes(student.stage)) {
+  if (opp.degrees?.length && !opp.degrees.some((d) => degreeMatches(student.degree, d))) {
+    ok = false;
+    reasons.push(`For ${opp.degrees.join(' / ')} students`);
+  }
+  if (opp.years?.length) {
+    if (!opp.years.includes(yearTargetOf(student))) {
+      ok = false;
+      reasons.push(`For ${opp.years.join(' / ')}`);
+    }
+  } else if (opp.stages?.length && !opp.stages.includes(student.stage)) {
     ok = false;
     reasons.push(`For ${opp.stages.join(' / ').toLowerCase()} students`);
   }

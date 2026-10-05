@@ -10,6 +10,7 @@ import { useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { queryClient } from './query.js';
+import { clearSession, loginUrl } from '../../../packages/demo-auth/session.js';
 import * as api from './api.js';
 import { Icon } from './atoms.jsx';
 import {
@@ -127,9 +128,20 @@ export function MentorPortalPage() {
             <div className="ms-portal-sub">Alumni mentor · {data.settings?.orgShort ?? 'UCT'} Mentorship Programme</div>
           </div>
         </div>
-        <span className={`ms-status ${mentor.status}`}>
-          {approved ? 'Approved mentor' : mentor.status === 'declined' ? 'Not approved' : 'Under review'}
-        </span>
+        <div className="ms-portal-right">
+          <span className={`ms-status ${mentor.status}`}>
+            {approved ? 'Approved mentor' : mentor.status === 'declined' ? 'Not approved' : 'Under review'}
+          </span>
+          <button
+            className="app-signout"
+            onClick={() => {
+              clearSession('careers');
+              window.location.href = loginUrl();
+            }}
+          >
+            Sign out
+          </button>
+        </div>
       </header>
 
       <div className="ms-portal-body">

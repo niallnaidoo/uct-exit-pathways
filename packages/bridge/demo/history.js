@@ -22,15 +22,20 @@ export function seedHistory() {
   const roster = demoRoster();
   const mentors = Object.fromEntries(demoAlumni().map((m) => [m.id, m]));
 
-  // EdOS: nightly sync from the student information system.
-  roster.forEach((s, i) => push(60, 'student.synced', 'edos', syncPayload(s), 2 + (i % 3)));
+  // EdOS: nightly sync from the student information system (last night's run).
+  roster.forEach((s, i) => push(1, 'student.synced', 'edos', syncPayload(s), 2 + (i % 3)));
+
+  // EdOS: when each student last opened Opportunities (engagement signal).
+  const viewed = { MLFKAG001: 1, ZNGAMA002: 3, JCBRUB003: 2, NDBZIN004: 6, CLKETH005: 4, STHLIN006: 9, ISCMOH007: 12, RDBPAL008: 15, BTHJOH009: 21, CELNOM010: 27, MNSDAN011: 2, HNDAAL012: 5, DBESIP013: 33, MKNTHA014: 3, NKSLER015: 8, MTHAYA103: 18, NTLBUS101: 50, PTRCRA102: 47 };
+  for (const [sn, d] of Object.entries(viewed)) push(d, 'opportunities.viewed', 'edos', { studentNumber: sn }, 13);
+  // ADMYUS016 (Yusuf) and JPPFAT104 (Fatima) have never opened Opportunities.
 
   // Careers: opportunities published over the last few weeks.
   demoOpportunities().forEach((o, i) => push(40 - i * 2, 'opportunity.published', 'careers', o, 9));
 
   // EdOS: pathway declarations (some students haven't declared — that's the risk).
   const decl = (sn, daysAgo, primary, backup, readiness, interests = [], note = '') =>
-    push(daysAgo, 'pathway.declared', 'edos', { studentNumber: sn, primary, backup, readiness, interests, note });
+    push(daysAgo, 'pathway.declared', 'edos', { studentNumber: sn, pathways: [primary, backup].filter(Boolean), primary, backup, readiness, interests, note });
   decl('MLFKAG001', 34, 'employment', 'study', { cv: true, linkedin: true, applications: true, interview: false }, ['Finance & Banking']);
   decl('ZNGAMA002', 30, 'study', 'employment', { shortlist: true, requirements: true, funding: false, referees: false }, ['Finance & Banking', 'Consulting']);
   decl('JCBRUB003', 28, 'employment', null, { cv: true, linkedin: false, applications: true, interview: true }, ['Engineering']);
@@ -49,9 +54,20 @@ export function seedHistory() {
 
   // EdOS: saves and applications.
   const save = (d, sn, id) => push(d, 'opportunity.saved', 'edos', { studentNumber: sn, opportunityId: `opp-${id}`, saved: true });
-  const apply = (d, appId, sn, id) => push(d, 'application.submitted', 'edos', { applicationId: appId, studentNumber: sn, opportunityId: `opp-${id}` });
+  const nameOf = (sn) => {
+    const s = roster.find((x) => x.studentNumber === sn);
+    return `${s.firstName}_${s.lastName}`;
+  };
+  const apply = (d, appId, sn, id, linkedin = '') =>
+    push(d, 'application.submitted', 'edos', {
+      applicationId: appId,
+      studentNumber: sn,
+      opportunityId: `opp-${id}`,
+      attachments: { cv: `${nameOf(sn)}_CV.pdf`, coverLetter: `${nameOf(sn)}_Cover_Letter.pdf`, transcript: 'EdOS academic transcript' },
+      answers: linkedin ? { linkedin } : {},
+    });
   save(32, 'MLFKAG001', 'ubuntu-grad');
-  apply(31, 'app-1', 'MLFKAG001', 'ubuntu-grad');
+  apply(31, 'app-1', 'MLFKAG001', 'ubuntu-grad', 'https://www.linkedin.com/in/example-kagiso');
   save(29, 'ZNGAMA002', 'ubuntu-bursary');
   save(29, 'ZNGAMA002', 'uct-hons-econ');
   apply(25, 'app-2', 'JCBRUB003', 'atlantic-eng');
@@ -62,8 +78,16 @@ export function seedHistory() {
   apply(11, 'app-7', 'MKNTHA014', 'health-community');
   save(9, 'NKSLER015', 'ocean-gap');
   save(8, 'RDBPAL008', 'ubuntu-media-intern');
-  push(6, 'application.updated', 'edos', { applicationId: 'app-2', studentNumber: 'JCBRUB003', status: 'shortlisted' });
-  push(3, 'application.updated', 'edos', { applicationId: 'app-1', studentNumber: 'MLFKAG001', status: 'offer' });
+  push(6, 'application.updated', 'careers', { applicationId: 'app-2', studentNumber: 'JCBRUB003', status: 'shortlisted', by: 'Careers Service' });
+  push(2, 'application.updated', 'careers', { applicationId: 'app-2', studentNumber: 'JCBRUB003', status: 'interview', by: 'Careers Service' });
+  push(14, 'application.updated', 'careers', { applicationId: 'app-1', studentNumber: 'MLFKAG001', status: 'interview', by: 'Careers Service' });
+  push(3, 'application.updated', 'careers', { applicationId: 'app-1', studentNumber: 'MLFKAG001', status: 'offer', by: 'Careers Service' });
+  apply(9, 'app-8', 'STHLIN006', 'ubuntu-grad', 'https://www.linkedin.com/in/example-lindiwe');
+  apply(4, 'app-9', 'HNDAAL012', 'kasi-dev', 'https://www.linkedin.com/in/example-aaliyah');
+
+  // Careers: hand-picked sends — "we think this is for you".
+  push(10, 'opportunity.sent', 'careers', { opportunityId: 'opp-ubuntu-grad', studentNumbers: ['STHLIN006', 'ZNGAMA002', 'CELNOM010'], message: 'Applications close soon — your marks and interests fit this programme well.', sentBy: 'Careers Service' });
+  push(5, 'opportunity.sent', 'careers', { opportunityId: 'opp-kasi-dev', studentNumbers: ['HNDAAL012', 'CLKETH005'], message: 'A strong first role for anyone moving into software or data.', sentBy: 'Careers Service' });
 
   // EdOS: mentor requests (profile travels with the request).
   const req = (d, sn, f) =>

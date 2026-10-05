@@ -1,27 +1,24 @@
 /**
  * UCT Careers Service — app shell.
  *
- * Routes: the office console (behind sign-in), the public alumni mentor sign-up
- * (#/join) and each mentor's private dashboard (#/alumni/:id?t=). Students don't
- * use this app at all — they live in EdOS. The two apps talk over the bus.
+ * Routes: the staff console and the employer portal (#/employer) — both reached
+ * through the shared sign-in page — plus the public alumni mentor sign-up
+ * (#/join) and each mentor's private dashboard (#/alumni/:id?t=). Students
+ * don't use this app; they live in EdOS.
  */
 import { StrictMode, useState, useCallback, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { queryClient, qk } from './query.js';
-import * as api from './api.js';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './query.js';
 import { subscribe, readLog } from '../../../packages/bridge/bus.js';
 import { timeAgo } from '../../../packages/bridge/describe.js';
 import { CareersModule } from './CareersApp.jsx';
+import { EmployerPortal } from './EmployerPortal.jsx';
+import { getSession, clearSession, loginUrl } from '../../../packages/demo-auth/session.js';
 import { MentorJoinPage } from './MentorJoinPage.jsx';
 import { MentorPortalPage } from './MentorPortalPage.jsx';
 import './app.css';
-
-// Not prefixed `uct-`, so a demo reset doesn't sign the office out.
-const ADMIN_KEY = 'careers-admin-session';
-/** Demo access — production uses UCT single sign-on. */
-const DEMO_PASSWORD = 'careers';
 
 function useToasts() {
   const [items, setItems] = useState([]);
@@ -56,115 +53,45 @@ function useBusRefresh() {
   return last;
 }
 
-function AdminLogin({ onAuthed }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
-  function submit(e) {
-    e.preventDefault();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return setError('Enter a valid email address.');
-    if (password !== DEMO_PASSWORD) return setError('That password is not correct.');
-    try {
-      localStorage.setItem(ADMIN_KEY, JSON.stringify({ email: email.trim(), at: Date.now() }));
-    } catch {
-      /* private mode — session-only is fine */
-    }
-    onAuthed();
+function signOut() {
+  clearSession('careers');
+  window.location.href = loginUrl();
+}
+
+/** Staff console or employer portal, depending on who signed in. */
+function SignedInApp({ employerArea }) {
+  const session = getSession('careers');
+  const ok = employerArea ? session?.role === 'employer' : session?.role === 'careers';
+  if (!ok) {
+    window.location.replace(loginUrl());
+    return null;
   }
-  return (
-    <div className="login-page">
-      <form className="login-card" onSubmit={submit}>
-        <div className="login-brand">
-          <span className="login-mark">UCT</span>
-          <div>
-            <div className="login-title">Careers Service</div>
-            <div className="login-sub">Exit Pathways · staff sign-in</div>
-          </div>
-        </div>
-        <label className="fld">
-          <span>Email</span>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@uct.ac.za" autoFocus />
-        </label>
-        <label className="fld">
-          <span>Password</span>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </label>
-        {error && (
-          <div className="form-error" role="alert">
-            {error}
-          </div>
-        )}
-        <button className="btn btn-primary login-btn" type="submit">
-          Sign in
-        </button>
-        <p className="login-demo">
-          Demo access — any email, password <code>{DEMO_PASSWORD}</code>. Production uses UCT single sign-on.
-        </p>
-      </form>
-    </div>
-  );
+  return <Shell session={session} employerArea={employerArea} />;
 }
 
-function AdminApp() {
-  const [authed, setAuthed] = useState(() => {
-    try {
-      return !!localStorage.getItem(ADMIN_KEY);
-    } catch {
-      return false;
-    }
-  });
-  if (!authed) return <AdminLogin onAuthed={() => setAuthed(true)} />;
-  return (
-    <AdminShell
-      onSignOut={() => {
-        try {
-          localStorage.removeItem(ADMIN_KEY);
-        } catch {
-          /* ignore */
-        }
-        setAuthed(false);
-      }}
-    />
-  );
-}
-
-function AdminShell({ onSignOut }) {
+function Shell({ session, employerArea }) {
   const [toast, toastNode] = useToasts();
   const last = useBusRefresh();
-  const { data: settings } = useQuery({ queryKey: qk.settings(), queryFn: api.getSettings });
   return (
     <div className="app-shell">
       <header className="app-bar">
         <div className="app-brand">
-          {settings?.orgShort ?? 'UCT'} Careers Service
-          <span className="app-brand-sub">Exit pathways · alumni mentorship</span>
+          UCT Careers Service
+          <span className="app-brand-sub">{employerArea ? `Employer portal · ${session.org}` : 'Exit pathways · employment · alumni mentorship'}</span>
         </div>
         <div className="app-bar-right">
-          <span className="cr-live" title="Events from EdOS arrive here instantly">
+          <span className="cr-live" title="Students' activity in EdOS arrives here instantly">
             <i />
-            Connected to EdOS{last ? ` · last event ${timeAgo(last.at)}` : ''}
+            Connected to EdOS{last ? ` · updated ${timeAgo(last.at)}` : ''}
           </span>
-          <div className="demo-flag">
-            Demo — no backend
-            <button
-              className="demo-reset"
-              onClick={() => {
-                if (window.confirm('Reset BOTH systems (Careers + EdOS) to the seeded demo?')) {
-                  api.resetDemo();
-                  window.location.reload();
-                }
-              }}
-            >
-              Reset
-            </button>
-          </div>
-          <button className="app-signout" onClick={onSignOut}>
+          <span className="app-user">{session.name}</span>
+          <button className="app-signout" onClick={signOut}>
             Sign out
           </button>
         </div>
       </header>
       <main className="main app-main">
-        <CareersModule toast={toast} />
+        {employerArea ? <EmployerPortal employerId={session.id} toast={toast} /> : <CareersModule toast={toast} />}
       </main>
       {toastNode}
     </div>
@@ -186,7 +113,8 @@ function PublicRoutes() {
     <Routes>
       <Route path="/join" element={<MentorJoinPage />} />
       <Route path="/alumni/:id" element={<MentorPortalPage />} />
-      <Route path="*" element={<AdminApp />} />
+      <Route path="/employer" element={<SignedInApp employerArea />} />
+      <Route path="*" element={<SignedInApp />} />
     </Routes>
   );
 }

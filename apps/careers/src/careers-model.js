@@ -12,7 +12,8 @@ export const GRADUATING_STAGES = ['Final year', 'Honours', 'Masters (career chan
 /** Readiness as a 0–1 fraction against the checklist for their pathway. */
 export function readinessOf(decl) {
   if (!decl) return null;
-  const items = READINESS[decl.primary] ?? [];
+  const seen = new Set();
+  const items = (decl.pathways ?? [decl.primary]).flatMap((p) => READINESS[p] ?? []).filter((i) => !seen.has(i.key) && seen.add(i.key));
   if (!items.length) return null;
   const done = items.filter((i) => decl.readiness?.[i.key]).length;
   return { done, total: items.length, pct: Math.round((done / items.length) * 100) };
@@ -65,7 +66,7 @@ export function unemploymentRisk(model, s) {
     score += 15;
     reasons.push(`Low readiness (${r.done}/${r.total})`);
   }
-  if ((!decl || decl.primary === 'employment') && apps.length === 0) {
+  if ((!decl || decl.pathways?.includes('employment')) && apps.length === 0) {
     score += 15;
     reasons.push('No applications yet');
   }
@@ -131,4 +132,51 @@ export function opportunityStats(model, opp, eligibleFn) {
   const registered = Object.values(model.students).filter((s) => s.status === 'registered');
   const eligible = registered.filter((s) => eligibleFn(opp, s).ok).length;
   return { applications: apps.length, saves, eligible };
+}
+
+/* ── EdOS engagement dashboard ───────────────────────────────────── */
+
+const daysSince = (iso) => (iso ? Math.floor((Date.now() - new Date(iso).getTime()) / 86400000) : null);
+const daysUntilDate = (d) => (d ? Math.ceil((new Date(`${d}T12:00:00`).getTime() - Date.now()) / 86400000) : null);
+
+/** Last time the student and their mentor were in touch (message or past meeting). */
+export function lastMentorContact(model, match) {
+  if (!match) return null;
+  const today = new Date().toISOString().slice(0, 10);
+  const times = [
+    ...model.messages.filter((x) => x.matchId === match.id).map((x) => x.at),
+    ...Object.values(model.meetings)
+      .filter((x) => x.matchId === match.id && x.date <= today)
+      .map((x) => `${x.date}T${x.time || '12:00'}:00`),
+  ];
+  if (match.startedAt) times.push(match.startedAt);
+  return times.sort().at(-1) ?? null;
+}
+
+/**
+ * One row per registered student: what EdOS tells us about their engagement —
+ * last opportunities check, mentor contact, next test, gradebook, support.
+ */
+export function engagementRows(model) {
+  return Object.values(model.students)
+    .filter((s) => s.status === 'registered')
+    .map((s) => {
+      const match = activeMatch(model, s.studentNumber);
+      const lastViewed = model.lastViewed[s.studentNumber] ?? null;
+      const contact = lastMentorContact(model, match);
+      const ints = Object.values(model.interventions).filter((i) => i.studentNumber === s.studentNumber);
+      const count = (st) => ints.filter((i) => i.status === st).length;
+      return {
+        ...s,
+        lastViewed,
+        daysSinceViewed: daysSince(lastViewed),
+        mentor: match ? match.mentor : null,
+        mentorRequested: !!model.mentees[s.studentNumber],
+        lastMentorContact: contact,
+        daysSinceMentor: daysSince(contact),
+        daysToTest: daysUntilDate(s.nextTest?.date),
+        interventions: { total: ints.length, open: count('open'), booked: count('booked'), done: count('done'), declined: count('declined'), latest: ints.sort((a, b) => b.assignedAt.localeCompare(a.assignedAt))[0] ?? null },
+        risk: unemploymentRisk(model, s),
+      };
+    });
 }

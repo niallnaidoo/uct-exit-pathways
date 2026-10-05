@@ -4,7 +4,8 @@ import { resolve } from 'node:path';
 
 /**
  * Three pages, one origin:
- *   /          — the integration showcase (both systems side by side + live bus)
+ *   /          — sign-in: each role lands in its own product
+ *   /split/    — both products side by side (demos, tutorial recordings)
  *   /edos/     — EdOS, the student learning platform (UCT edition)
  *   /careers/  — the Careers Service platform
  *
@@ -23,7 +24,8 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        showcase: resolve(__dirname, 'apps/index.html'),
+        login: resolve(__dirname, 'apps/index.html'),
+        split: resolve(__dirname, 'apps/split/index.html'),
         edos: resolve(__dirname, 'apps/edos/index.html'),
         careers: resolve(__dirname, 'apps/careers/index.html'),
       },

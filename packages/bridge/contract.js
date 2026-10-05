@@ -22,7 +22,13 @@ export const EVENTS = {
     title: 'Student profile synced',
     why: 'Careers needs who the student is and how they are doing academically — without re-capturing it.',
     payload:
-      '{ studentNumber, firstName, lastName, email, faculty, degree, yearOfStudy, stage, expectedGraduation, average, creditsCompleted, creditsRequired, status: registered|graduated }',
+      '{ studentNumber, firstName, lastName, email, faculty, degree, yearOfStudy, stage, expectedGraduation, average, creditsCompleted, creditsRequired, status: registered|graduated, nextTest: { code, module, label, date }, gradebook: { recorded, due, total } }',
+  },
+  'opportunities.viewed': {
+    from: 'edos',
+    title: 'Opportunities checked',
+    why: 'Engagement signal — when a student last looked at what Careers has published.',
+    payload: '{ studentNumber }',
   },
   'pathway.declared': {
     from: 'edos',
@@ -39,14 +45,8 @@ export const EVENTS = {
   'application.submitted': {
     from: 'edos',
     title: 'Application submitted',
-    why: 'A student applied to a published opportunity from inside EdOS.',
-    payload: '{ applicationId, studentNumber, opportunityId }',
-  },
-  'application.updated': {
-    from: 'edos',
-    title: 'Application outcome',
-    why: 'The student reports progress — shortlisted, offer, accepted. Feeds destinations.',
-    payload: '{ applicationId, status: submitted|shortlisted|offer|accepted|unsuccessful|withdrawn }',
+    why: 'A student applied from inside EdOS — CV, cover letter, LinkedIn, and the transcript attached by EdOS.',
+    payload: '{ applicationId, studentNumber, opportunityId, attachments: { cv, coverLetter, transcript }, answers: { linkedin } }',
   },
   'mentorship.requested': {
     from: 'edos',
@@ -79,7 +79,13 @@ export const EVENTS = {
     title: 'Opportunity published',
     why: 'Jobs, programmes, bursaries, scholarships and volunteering appear inside EdOS for eligible students.',
     payload:
-      '{ id, kind, title, organisation, location, summary, faculties[], stages[], minAverage, closingDate, value, uct }',
+      '{ id, kind, title, organisation, employerId, location, workMode, positions, summary, faculties[], degrees[], years[], minAverage, closingDate, value, requirements: { cv, coverLetter, transcript, linkedin }, postedBy }',
+  },
+  'opportunity.sent': {
+    from: 'careers',
+    title: 'Opportunity sent to students',
+    why: 'Careers hand-picks students for an opportunity — it lands in their EdOS as “Sent to you”.',
+    payload: '{ opportunityId, studentNumbers[], message, sentBy }',
   },
   'opportunity.closed': {
     from: 'careers',
@@ -113,6 +119,12 @@ export const EVENTS = {
   },
 
   /* ── Both directions ──────────────────────────────────────────── */
+  'application.updated': {
+    from: 'both',
+    title: 'Application status changed',
+    why: 'Careers moves an applicant through the hiring stages; a student reports outcomes. Feeds destinations.',
+    payload: '{ applicationId, studentNumber, status: submitted|shortlisted|interview|offer|accepted|unsuccessful|withdrawn, by }',
+  },
   'mentorship.message.sent': {
     from: 'both',
     title: 'Mentorship message',

@@ -169,3 +169,57 @@ export const MILESTONES = [
   { key: 'applications', label: 'Applications', when: 'Months 7–9', detail: 'Applications strategy, reflection, transition plan' },
   { key: 'closeout', label: 'Close-out', when: 'Final month', detail: 'Goals reviewed, outcomes documented, testimonial captured' },
 ];
+
+/** Application stages — Careers moves applicants along; students see the same stage in EdOS. */
+export const APPLICATION_STAGES = [
+  { key: 'submitted', label: 'Applied', tone: 'neutral' },
+  { key: 'shortlisted', label: 'Shortlisted', tone: 'progress' },
+  { key: 'interview', label: 'Interview', tone: 'progress' },
+  { key: 'offer', label: 'Offer', tone: 'good' },
+  { key: 'accepted', label: 'Hired / accepted', tone: 'good' },
+  { key: 'unsuccessful', label: 'Unsuccessful', tone: 'bad' },
+  { key: 'withdrawn', label: 'Withdrawn', tone: 'neutral' },
+];
+export const stageMeta = (key) => APPLICATION_STAGES.find((s) => s.key === key) ?? APPLICATION_STAGES[0];
+
+export const EMPLOYMENT_KINDS = ['gradprog', 'job', 'internship', 'workready'];
+export const WORK_MODES = ['On-site', 'Hybrid', 'Remote'];
+
+/**
+ * Degree families employers target ("BCom students"). A student matches when
+ * their degree starts with the family, e.g. "BCom" ⊃ "BCom Accounting".
+ */
+export const DEGREE_FAMILIES = {
+  Commerce: ['BCom', 'BBusSc'],
+  'Engineering & the Built Environment': ['BSc (Eng)', 'BAS'],
+  'Health Sciences': ['MBChB', 'BSc Physiotherapy', 'BSc Occupational Therapy'],
+  Humanities: ['BA', 'BSocSc', 'BMus'],
+  Law: ['LLB'],
+  Science: ['BSc', 'BSc (Hons)', 'MSc'],
+};
+export const ALL_DEGREE_FAMILIES = [...new Set(Object.values(DEGREE_FAMILIES).flat())];
+export const degreeMatches = (degree, family) =>
+  degree === family || degree.startsWith(`${family} `) || (family === 'BSc' && /^BSc (?!\(Eng\))/.test(degree));
+
+/** Year-of-study targeting ("students going into final year next year"). */
+export const YEAR_TARGETS = ['2nd year', '3rd year', '4th year +', 'Honours', 'Masters', 'Graduates'];
+export function yearTargetOf(s) {
+  if (s.status === 'graduated') return 'Graduates';
+  if (s.level === 'honours') return 'Honours';
+  if (s.level === 'masters') return 'Masters';
+  if (s.yearOfStudy >= 4) return '4th year +';
+  return s.yearOfStudy === 3 ? '3rd year' : s.yearOfStudy === 2 ? '2nd year' : '1st year';
+}
+
+/**
+ * What a student submits when applying. The employer chooses which are
+ * required per opportunity. The transcript comes straight from EdOS — the
+ * student never has to download and re-upload it.
+ */
+export const APPLICATION_FIELDS = [
+  { key: 'cv', label: 'CV', type: 'file', hint: 'PDF or Word' },
+  { key: 'coverLetter', label: 'Cover letter', type: 'file', hint: 'PDF or Word' },
+  { key: 'transcript', label: 'Academic transcript', type: 'auto', hint: 'Attached automatically from EdOS' },
+  { key: 'linkedin', label: 'LinkedIn profile', type: 'url', hint: 'https://www.linkedin.com/in/…' },
+];
+export const DEFAULT_REQUIREMENTS = { cv: true, coverLetter: true, transcript: true, linkedin: false };

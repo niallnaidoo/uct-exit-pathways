@@ -1,4 +1,4 @@
-/* EdOS UCT edition — layout + exit-pathway components on top of brand.css. */
+/* Exit Pathways module — components, built on EdOS brand.css tokens. */
 :root {
   --pw-study: #4d6884;
   --pw-study-bg: #e6ecf3;
@@ -11,69 +11,6 @@
   --pw-seeking: #c25548;
   --pw-seeking-bg: #f7dac9;
 }
-* { box-sizing: border-box; }
-html, body { margin: 0; }
-body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased; }
-
-/* Shell */
-.ed-shell { display: flex; min-height: 100vh; }
-.ed-side {
-  width: 240px;
-  flex: none;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  padding: 22px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  border-right: 1px solid rgba(26, 23, 20, 0.08);
-  background: var(--paper);
-  overflow-y: auto;
-}
-.ed-mark { display: flex; align-items: center; gap: 10px; padding: 0 6px; color: var(--ink); }
-.ed-mark-name { font-family: var(--serif); font-weight: 600; font-size: 17px; letter-spacing: 0.02em; }
-.ed-mark-sub { font-size: 7.5px; letter-spacing: 0.18em; color: var(--ink-3); margin-top: 3px; }
-.ed-side-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; color: var(--ink-3); padding: 0 12px 8px; text-transform: uppercase; }
-.ed-nav { display: flex; flex-direction: column; gap: 2px; }
-.ed-nav svg { flex: none; opacity: 0.7; }
-.nav-row.is-active svg { opacity: 1; }
-.ed-badge { margin-left: auto; font-style: normal; font-size: 10.5px; font-weight: 700; background: var(--accent); color: #fff; padding: 1px 7px; border-radius: 99px; }
-.nav-row.is-active .ed-badge { background: var(--accent-electric); color: var(--ink); }
-.ed-dot { margin-left: auto; width: 7px; height: 7px; border-radius: 50%; background: var(--warn); }
-.ed-side-careers {
-  margin-top: auto;
-  display: flex;
-  gap: 8px;
-  font-size: 11.5px;
-  line-height: 1.45;
-  color: var(--ink-3);
-  background: var(--paper-2);
-  padding: 10px 12px;
-  border-radius: var(--r-2);
-}
-.ed-side-careers svg { flex: none; margin-top: 2px; }
-.ed-side-user { display: flex; gap: 10px; align-items: center; padding: 0 6px; }
-.ed-side-user strong { display: block; font-size: 12.5px; }
-.ed-side-user small { font-size: 10.5px; color: var(--ink-3); }
-.ed-body { flex: 1; min-width: 0; }
-.ed-main { padding: 26px 36px 80px; max-width: 1120px; }
-
-.ed-demobar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 36px;
-  background: var(--ink);
-  color: rgba(243, 238, 229, 0.8);
-  font-size: 12px;
-  flex-wrap: wrap;
-}
-.ed-demobar-tag { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 10px; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 99px; }
-.ed-demobar label { display: inline-flex; align-items: center; gap: 8px; }
-.ed-demobar select { background: #1a2434; color: #f3eee5; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 5px 8px; font-size: 12px; max-width: 320px; }
-.ed-demobar-reset { margin-left: auto; color: rgba(243, 238, 229, 0.8); font-size: 12px; text-decoration: underline; }
-
 /* Page scaffolding */
 .ed-page { display: flex; flex-direction: column; gap: 22px; }
 .ed-page-head h1 { font-size: clamp(30px, 4vw, 42px); margin: 6px 0 8px; }
@@ -86,16 +23,6 @@ body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: anti
 .ed-grid-side { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
 .ed-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
 .ed-row > * { flex: 1 1 160px; }
-
-/* Hero */
-.ed-hero { display: flex; justify-content: space-between; gap: 24px; padding: 28px 30px; flex-wrap: wrap; }
-.ed-hero h1 { color: #fff; font-size: clamp(28px, 3.6vw, 40px); margin: 8px 0 10px; }
-.ed-hero p { color: rgba(243, 238, 229, 0.78); max-width: 520px; margin: 0; font-size: 14.5px; line-height: 1.55; }
-.ed-hero-stats { display: flex; gap: 26px; align-items: flex-end; }
-.ed-hero-stats > div { display: flex; flex-direction: column; }
-.ed-hero-stats .t-num { font-size: 34px; color: #fff; }
-.ed-hero-stats em { font-style: normal; font-size: 16px; color: rgba(243, 238, 229, 0.5); }
-.ed-hero-stats small { font-size: 11px; color: rgba(243, 238, 229, 0.6); letter-spacing: 0.06em; text-transform: uppercase; }
 
 /* Pathway tags + cards */
 .ed-pw { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 99px; white-space: nowrap; }
@@ -233,20 +160,6 @@ body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: anti
 .ed-milestones strong { display: block; font-size: 13px; }
 .ed-milestones small { font-size: 11.5px; color: var(--ink-3); }
 
-/* Modules */
-.ed-stat-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.ed-stat { padding: 18px; display: flex; flex-direction: column; gap: 4px; }
-.ed-stat .t-num { font-size: 30px; }
-.ed-stat small { font-size: 12px; color: var(--ink-3); }
-.ed-mod-list { padding: 4px 18px; }
-.ed-mod { display: grid; grid-template-columns: 100px minmax(0, 1fr) 160px; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--paper-2); }
-.ed-mod:last-child { border-bottom: 0; }
-.ed-mod-code { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
-.ed-mod-name strong { display: block; font-size: 14px; }
-.ed-mod-name small { font-size: 12px; color: var(--ink-3); }
-.ed-mod-mark { display: flex; align-items: center; gap: 10px; }
-.ed-mod-mark .ed-progress { flex: 1; }
-
 /* Graduate destination */
 .ed-choice-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .ed-choice { border: 1.5px solid var(--paper-3); background: #fff; border-radius: var(--r-2); padding: 12px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
@@ -255,33 +168,40 @@ body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: anti
 .ed-choice.on.venture { border-color: var(--pw-venture); background: var(--pw-venture-bg); color: var(--pw-venture); }
 .ed-choice.on.seeking { border-color: var(--pw-seeking); background: var(--pw-seeking-bg); color: var(--pw-seeking); }
 
-/* Inbox */
-.ed-inbox { padding: 4px 0; }
-.ed-note { display: flex; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--paper-2); }
-.ed-note:last-child { border-bottom: 0; }
-.ed-note:hover { background: var(--paper); }
-.ed-note.unread { background: color-mix(in srgb, var(--accent-soft) 60%, #fff); }
-.ed-note strong { display: block; font-size: 14px; }
-.ed-note p { margin: 3px 0; font-size: 13px; color: var(--ink-2); }
-.ed-note small { font-size: 11.5px; color: var(--ink-3); }
-.ed-note-icon { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; flex: none; background: var(--paper-2); color: var(--ink-2); }
-.ed-note-icon.support { background: var(--accent-soft); color: var(--accent-deep); }
-.ed-note-icon.mentor, .ed-note-icon.message, .ed-note-icon.meeting { background: var(--pw-employment-bg); color: var(--good); }
-
 /* Mobile */
 @media (max-width: 860px) {
-  .ed-shell { flex-direction: column; }
-  .ed-side { position: static; width: 100%; height: auto; flex-direction: row; align-items: center; padding: 10px 14px; gap: 12px; overflow-x: auto; }
-  .ed-side > div:nth-child(2) { flex: 1; min-width: 0; }
-  .ed-side-label, .ed-side-careers, .ed-side-user, .ed-mark-sub { display: none; }
-  .ed-nav { flex-direction: row; overflow-x: auto; scrollbar-width: none; }
-  .ed-nav .nav-row { white-space: nowrap; }
-  .ed-main { padding: 18px 16px 70px; }
-  .ed-demobar { padding: 8px 16px; }
-  .ed-grid-2, .ed-grid-side, .ed-pw-grid, .ed-opp-list, .ed-opp-mini-grid, .ed-stat-row { grid-template-columns: minmax(0, 1fr); }
+  .ed-grid-2, .ed-grid-side, .ed-pw-grid, .ed-opp-list, .ed-opp-mini-grid { grid-template-columns: minmax(0, 1fr); }
   .ed-choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ed-mod { grid-template-columns: minmax(0, 1fr) 110px; }
-  .ed-mod-code { grid-column: 1 / -1; }
-  .ed-hero { padding: 22px 20px; }
   .ed-toggle { margin-left: 0; }
 }
+
+/* Multi-pathway, sent, applications */
+.ed-pw-order { margin-left: 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: var(--ink); color: #fff; padding: 2px 7px; border-radius: 99px; vertical-align: middle; }
+.ed-count.hot { background: var(--accent); color: #fff; }
+.ed-opp.sent { box-shadow: 0 0 0 1.5px var(--accent-electric), var(--shadow-card); }
+.ed-sent-note { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; color: var(--accent-deep); background: var(--accent-soft); padding: 8px 10px; border-radius: 8px; }
+.ed-sent-note svg { flex: none; margin-top: 2px; }
+.ed-sent-note em { color: var(--ink-2); }
+.ed-stage { font-size: 12px; font-weight: 700; padding: 5px 11px; border-radius: 99px; background: var(--paper-2); color: var(--ink-2); white-space: nowrap; }
+.ed-stage.progress { background: var(--accent-soft); color: var(--accent-deep); }
+.ed-stage.good { background: var(--pw-employment-bg); color: var(--good); }
+.ed-stage.bad { background: var(--pw-seeking-bg); color: var(--risk); }
+.ed-apps { padding: 4px 0; }
+.ed-app { display: flex; gap: 16px; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--paper-2); flex-wrap: wrap; }
+.ed-app:last-child { border-bottom: 0; }
+.ed-app-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+.ed-app-main strong { font-size: 15px; }
+.ed-app-track { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+.ed-app-track span { font-size: 11px; padding: 3px 9px; border-radius: 99px; background: var(--paper-2); color: var(--ink-4); }
+.ed-app-track span.on { background: var(--ink); color: #fff; }
+.ed-app-side { display: flex; align-items: center; gap: 10px; }
+.ed-link-btn { font-size: 12.5px; color: var(--ink-3); text-decoration: underline; }
+.ed-apply-fields { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.ed-apply-field { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; background: var(--paper); border-radius: var(--r-2); }
+.ed-apply-label { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.ed-apply-label strong { font-size: 13.5px; }
+.ed-auto { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--good); font-weight: 600; }
+.ed-file { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px dashed rgba(12, 11, 9, 0.2); border-radius: var(--r-2); padding: 8px 10px; cursor: pointer; }
+.ed-file-name { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ed-file-empty { font-size: 13px; color: var(--ink-4); flex: 1; }
+.ed-file-btn { font-size: 12px; font-weight: 600; color: var(--accent-deep); }

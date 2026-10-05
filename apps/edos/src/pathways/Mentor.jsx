@@ -7,8 +7,8 @@
 import { useState } from 'react';
 import { useEdos, requestMentor, respondToOffer, sendMessage, bookMeeting } from './store.js';
 import { Icon, Initials, Synced, Section } from './ui.jsx';
-import { INDUSTRIES, SKILLS, LANGUAGES, MILESTONES } from '../../../packages/bridge/vocab.js';
-import { timeAgo } from '../../../packages/bridge/describe.js';
+import { INDUSTRIES, SKILLS, LANGUAGES, MILESTONES } from '../../../../packages/bridge/vocab.js';
+import { timeAgo } from '../../../../packages/bridge/describe.js';
 
 export function Mentor() {
   const v = useEdos();

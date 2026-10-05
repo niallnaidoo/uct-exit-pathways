@@ -459,3 +459,8 @@
   .cr-feed-row .cr-dir, .cr-log-main code { display: none; }
   .cr-search { min-width: 0; width: 100%; }
 }
+
+.cr-src-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.cr-src-dot.edos { background: #6e8aa8; }
+.cr-src-dot.careers { background: var(--green-bright); }
+.cr-pws { display: flex; gap: 4px; flex-wrap: wrap; }

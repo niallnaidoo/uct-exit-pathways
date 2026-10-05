@@ -1543,3 +1543,5 @@
     font-size: 21px;
   }
 }
+
+.ms-portal-right { display: flex; align-items: center; gap: 10px; }

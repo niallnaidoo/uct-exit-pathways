@@ -10,9 +10,13 @@
  */
 import { publish, readLog, newId } from '../../../packages/bridge/bus.js';
 import { project, eligibility } from '../../../packages/bridge/project.js';
+import { kindMeta } from '../../../packages/bridge/vocab.js';
+
+const kindPathway = (k) => kindMeta(k).pathway;
 import { demoAlumni, publicMentor } from '../../../packages/bridge/demo/alumni.js';
 import { matchScore, maxMentees, pulseNeedsReview } from './mentorship-model.js';
-import { studentRows, opportunityStats } from './careers-model.js';
+import { studentRows, opportunityStats, engagementRows } from './careers-model.js';
+import { demoEmployers } from '../../../packages/bridge/demo/employers.js';
 import { describe } from '../../../packages/bridge/describe.js';
 
 const KEY = 'uct-careers-v1';
@@ -103,19 +107,80 @@ export const publishOpportunity = (body) => {
     kind: body.kind,
     title: body.title.trim(),
     organisation: body.organisation.trim(),
+    employerId: body.employerId ?? null,
+    postedBy: body.employerId ? 'employer' : 'careers',
     location: body.location?.trim() || 'Cape Town',
+    workMode: body.workMode || 'On-site',
+    positions: body.positions ? Number(body.positions) : null,
     summary: body.summary?.trim() || '',
     faculties: body.faculties ?? [],
-    stages: body.stages ?? [],
+    degrees: body.degrees ?? [],
+    years: body.years ?? [],
+    stages: [],
     minAverage: body.minAverage === '' || body.minAverage == null ? null : Number(body.minAverage),
     closingDate: body.closingDate || null,
     value: body.value?.trim() || '',
+    requirements: body.requirements ?? { cv: true, coverLetter: false, transcript: true, linkedin: false },
     uct: !!body.uct,
   };
   return ok(publish('opportunity.published', opp, FROM));
 };
 
 export const closeOpportunity = (opportunityId) => ok(publish('opportunity.closed', { opportunityId }, FROM));
+
+/** Hand-pick students for an opportunity — lands in their EdOS as "Sent to you". */
+export const sendOpportunity = (opportunityId, studentNumbers, message) => {
+  if (!studentNumbers?.length) return Promise.reject(new Error('pick at least one student'));
+  return ok(publish('opportunity.sent', { opportunityId, studentNumbers, message: message?.trim() || '', sentBy: 'UCT Careers Service' }, FROM));
+};
+
+/** Move an applicant along (shortlisted → interview → offer …). The student sees it in EdOS. */
+export const updateApplicationStage = (applicationId, status, by = 'Careers Service') => {
+  const a = model().applications[applicationId];
+  if (!a) return Promise.reject(new Error('application not found'));
+  return ok(publish('application.updated', { applicationId, studentNumber: a.studentNumber, status, by }, FROM));
+};
+
+/** One opportunity with its applicants (students' synced profiles attached). */
+export const getOpportunityDetail = (opportunityId) =>
+  tryOk(() => {
+    const m = model();
+    const o = m.opportunities[opportunityId];
+    if (!o) throw new Error('opportunity not found');
+    const applicants = Object.values(m.applications)
+      .filter((a) => a.opportunityId === opportunityId)
+      .map((a) => ({ ...a, student: m.students[a.studentNumber] }))
+      .sort((x, y) => y.submittedAt.localeCompare(x.submittedAt));
+    const sentTo = Object.entries(m.sent)
+      .filter(([, list]) => list.some((x) => x.opportunityId === opportunityId))
+      .map(([sn]) => sn);
+    // Who could still be sent this: eligible, registered or graduated, not applied.
+    const applied = new Set(applicants.map((a) => a.studentNumber));
+    const candidates = Object.values(m.students)
+      .filter((s) => !applied.has(s.studentNumber))
+      .map((s) => {
+        const decl = m.pathways[s.studentNumber];
+        const el = eligibility(o, s);
+        const fits = decl?.pathways?.includes(kindPathway(o.kind));
+        return { ...s, eligible: el, pathways: decl?.pathways ?? [], fits, sent: sentTo.includes(s.studentNumber) };
+      })
+      .filter((s) => s.eligible.ok)
+      .sort((x, y) => Number(y.fits) - Number(x.fits) || y.average - x.average);
+    return { opportunity: { ...o, stats: opportunityStats(m, o, eligibility) }, applicants, candidates, sentTo };
+  });
+
+/* ── Employers (private to Careers) ── */
+export const getEmployers = () => ok(demoEmployers());
+export const getEmployer = (id) => ok(demoEmployers().find((e) => e.id === id) ?? null);
+
+/** How many registered students a draft's targeting would reach right now. */
+export const countEligible = (draft) => {
+  const m = model();
+  return Object.values(m.students).filter((s) => s.status === 'registered' && eligibility(draft, s).ok).length;
+};
+
+/** The EdOS engagement dashboard. */
+export const getEngagement = () => ok(engagementRows(model()));
 
 export const assignIntervention = ({ studentNumber, type, title, message, dueDate }) =>
   ok(

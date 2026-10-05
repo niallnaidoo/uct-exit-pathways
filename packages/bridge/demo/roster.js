@@ -51,9 +51,29 @@ const RAW = [
   { sn: 'JPPFAT104', first: 'Fatima', last: 'Jappie', faculty: 'Engineering & the Built Environment', degree: 'BSc (Eng) Mechanical', year: 4, years: 4, avg: 63, graduated: '2025-12-12', modules: [] },
 ];
 
+const dayFromToday = (n) => {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+};
+const clamp = (n) => Math.max(0, Math.min(100, n));
+
+/**
+ * Each module's assessment schedule — past ones marked (a few still waiting
+ * for a mark), upcoming tests and the exam ahead. Spread so students differ.
+ */
+function assessmentsFor(module, k, i) {
+  return [
+    { id: `${module.code}-t1`, label: 'Test 1', weight: 20, date: dayFromToday(-40 + (k % 5)), mark: clamp(module.mark + ((k + i) % 5) - 2) },
+    { id: `${module.code}-a1`, label: 'Assignment', weight: 15, date: dayFromToday(-12 + (k % 4)), mark: (k + i) % 4 === 0 ? null : clamp(module.mark + ((k * 2 + i) % 5) - 2) },
+    { id: `${module.code}-t2`, label: 'Test 2', weight: 25, date: dayFromToday(((k * 3 + i * 5) % 24) + 2), mark: null },
+    { id: `${module.code}-ex`, label: 'Final exam', weight: 40, date: dayFromToday(35 + i * 3), mark: null },
+  ];
+}
+
 /** The full academic record EdOS holds for each student. */
 export function demoRoster() {
-  return RAW.map((r) => {
+  return RAW.map((r, k) => {
     const s = {
       studentNumber: r.sn,
       firstName: r.first,
@@ -65,7 +85,7 @@ export function demoRoster() {
       yearOfStudy: r.year,
       programmeYears: r.years,
       average: r.avg,
-      modules: r.modules,
+      modules: r.modules.map((m, i) => ({ ...m, assessments: assessmentsFor(m, k, i) })),
       creditsRequired: r.years * 120,
       creditsCompleted: r.graduated ? r.years * 120 : (r.year - 1) * 120 + Math.round(r.modules.reduce((t, m) => t + m.credits, 0) * 0.5),
       status: r.graduated ? 'graduated' : 'registered',
@@ -75,6 +95,25 @@ export function demoRoster() {
     s.stage = r.graduated ? 'Graduate' : stageFor(s);
     return s;
   });
+}
+
+/** Next upcoming assessment across all modules (EdOS calendar). */
+export function nextTest(s) {
+  const today = new Date().toISOString().slice(0, 10);
+  const all = s.modules.flatMap((m) => m.assessments.map((a) => ({ code: m.code, module: m.name, label: a.label, date: a.date })));
+  return all.filter((a) => a.date >= today).sort((a, b) => a.date.localeCompare(b.date))[0] ?? null;
+}
+
+/** Gradebook summary: marks recorded vs assessments already written. */
+export function gradebookSummary(s) {
+  const today = new Date().toISOString().slice(0, 10);
+  const all = s.modules.flatMap((m) => m.assessments);
+  const written = all.filter((a) => a.date < today);
+  return {
+    recorded: written.filter((a) => a.mark != null).length,
+    due: written.filter((a) => a.mark == null).length,
+    total: all.length,
+  };
 }
 
 /**
@@ -89,5 +128,7 @@ export function syncPayload(s) {
   return {
     studentNumber, firstName, lastName, email, faculty, degree, yearOfStudy, stage, expectedGraduation,
     average, creditsCompleted, creditsRequired, status, graduatedAt,
+    nextTest: nextTest(s),
+    gradebook: gradebookSummary(s),
   };
 }
