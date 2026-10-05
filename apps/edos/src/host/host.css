@@ -123,3 +123,4 @@ body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: anti
 .ed-opp-mini-tags { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .ed-sent-chip { font-size: 10.5px; font-weight: 700; color: #fff; background: var(--accent); padding: 3px 8px; border-radius: 99px; }
 .ed-opp-mini.sent { box-shadow: 0 0 0 1.5px var(--accent-electric), var(--shadow-card); }
+.ed-crest { height: 36px; width: auto; display: block; flex: none; }

@@ -259,7 +259,7 @@ export function MentorJoinPage() {
   return (
     <div className="ms-page">
       <header className="ms-top">
-        <span className="login-mark">{org}</span>
+        <img src={`${import.meta.env.BASE_URL}brand/uct-shield.png`} alt="University of Cape Town" className="ms-crest" />
         <div>
           <div className="ms-top-title">Alumni Mentorship Programme</div>
           <div className="ms-top-sub">Become a mentor</div>

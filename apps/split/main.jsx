@@ -32,8 +32,8 @@ function Split() {
     <div className={`sc ${layout} bus-closed`}>
       <header className="sc-top">
         <div className="sc-brand">
-          <a className="sc-mark" href="../">
-            UCT
+          <a href="../" title="Sign-in page">
+            <img src={`${import.meta.env.BASE_URL}brand/uct-shield.png`} alt="University of Cape Town" style={{ height: 32, display: 'block' }} />
           </a>
           <div>
             <div className="sc-title">Exit Pathways</div>

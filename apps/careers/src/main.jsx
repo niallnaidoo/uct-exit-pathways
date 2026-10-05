@@ -75,9 +75,14 @@ function Shell({ session, employerArea }) {
   return (
     <div className="app-shell">
       <header className="app-bar">
-        <div className="app-brand">
-          UCT Careers Service
-          <span className="app-brand-sub">{employerArea ? `Employer portal · ${session.org}` : 'Exit pathways · employment · alumni mentorship'}</span>
+        <div className="app-brand-row">
+          <img src={`${import.meta.env.BASE_URL}brand/uct-shield.png`} alt="University of Cape Town" className="app-crest" />
+          <div className="app-brand">
+            UCT Careers Service
+            <span className="app-brand-sub">
+              {employerArea ? `Employer portal · ${session.org}` : 'Exit pathways · employment · alumni mentorship'}
+            </span>
+          </div>
         </div>
         <div className="app-bar-right">
           <span className="cr-live" title="Students' activity in EdOS arrives here instantly">

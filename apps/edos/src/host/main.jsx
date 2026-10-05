@@ -20,10 +20,7 @@ import './host.css';
 function Mark() {
   return (
     <div className="ed-mark">
-      <svg width="30" height="30" viewBox="0 0 40 40" aria-hidden="true">
-        <circle cx="20" cy="20" r="19" fill="none" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M20 6 L23 16 L33 16 L25 22 L28 32 L20 26 L12 32 L15 22 L7 16 L17 16 Z" fill="var(--accent)" />
-      </svg>
+      <img src={`${import.meta.env.BASE_URL}brand/uct-shield.png`} alt="University of Cape Town" className="ed-crest" />
       <div>
         <div className="ed-mark-name">EdOS</div>
         <div className="ed-mark-sub">UNIVERSITY OF CAPE TOWN</div>

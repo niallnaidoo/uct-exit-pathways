@@ -5,7 +5,7 @@ body { font-family: var(--sans); color: var(--ink); }
 .lg-card { width: 100%; max-width: 980px; display: grid; grid-template-columns: 1fr 1.1fr; background: #fff; border-radius: var(--r-3); overflow: hidden; box-shadow: var(--shadow-lift); }
 .lg-brand { background: var(--gradient-mesh); color: var(--paper); padding: 40px; display: flex; flex-direction: column; gap: 32px; position: relative; }
 .lg-mark { display: flex; align-items: center; gap: 12px; color: #f3eee5; }
-.lg-mark-name { font-family: var(--serif); font-weight: 600; font-size: 14px; letter-spacing: 0.06em; }
+.lg-mark-name { font-family: var(--serif); font-weight: 600; font-size: 17px; letter-spacing: 0.01em; }
 .lg-mark-sub { font-size: 9px; letter-spacing: 0.2em; color: rgba(243, 238, 229, 0.6); margin-top: 3px; }
 .lg-pitch { margin-top: auto; }
 .lg-pitch h1 { font-family: var(--serif); font-size: 42px; font-weight: 500; line-height: 0.98; letter-spacing: -0.025em; margin: 0 0 14px; color: #fff; }
@@ -39,3 +39,5 @@ body { font-family: var(--sans); color: var(--ink); }
   .lg-form-side { padding: 26px 22px; }
   .lg-people { grid-template-columns: 1fr; }
 }
+.lg-crest { height: 46px; width: auto; display: block; }
+.lg-logo { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 0 26px; }

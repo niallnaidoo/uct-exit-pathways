@@ -56,13 +56,10 @@ function Login() {
       <div className="lg-card">
         <div className="lg-brand">
           <div className="lg-mark">
-            <svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true">
-              <circle cx="20" cy="20" r="19" fill="none" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M20 6 L23 16 L33 16 L25 22 L28 32 L20 26 L12 32 L15 22 L7 16 L17 16 Z" fill="var(--accent-electric)" />
-            </svg>
+            <img src={`${import.meta.env.BASE_URL}brand/uct-shield.png`} alt="" className="lg-crest" />
             <div>
-              <div className="lg-mark-name">UNIVERSITY OF CAPE TOWN</div>
-              <div className="lg-mark-sub">EdOS · CAREERS SERVICE</div>
+              <div className="lg-mark-name">EdOS · Careers Service</div>
+              <div className="lg-mark-sub">UNIVERSITY OF CAPE TOWN</div>
             </div>
           </div>
           <div className="lg-pitch">
@@ -78,6 +75,11 @@ function Login() {
         </div>
 
         <div className="lg-form-side">
+          <img
+            src={`${import.meta.env.BASE_URL}brand/uct-logo-horizontal.png`}
+            alt="University of Cape Town"
+            className="lg-logo"
+          />
           {current && (
             <div className="lg-current">
               Signed in as <strong>{current.name}</strong>
