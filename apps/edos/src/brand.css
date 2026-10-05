@@ -1,0 +1,720 @@
+/* Stellenkloof Secondary — design system tokens
+ * Editorial / sport publication aesthetic. Warm paper bg, deep ink, single
+ * coral accent. Big serif display + clean sans body. Lots of negative space.
+ */
+
+:root {
+  /* =========================================================================
+   * Surfaces — cool near-white. Slight blue undertone to pair with the
+   * new icy-steel accent. Reads as a premium "product" canvas rather
+   * than the previous warm-cream "magazine" feel.
+   * =======================================================================*/
+  --paper:   #f7f8fa;           /* primary canvas — near-white, cool */
+  --paper-2: #eef0f4;           /* card surface */
+  --paper-3: #e1e4ea;           /* dividers + subtle fills */
+  --ink:     #0e1722;           /* deep navy-black (matches the dark card surface) */
+  --ink-2:   #2a3a52;           /* body text */
+  --ink-3:   #5d6c84;           /* meta + labels */
+  --ink-4:   #9ca6b8;           /* muted */
+
+  /* Primary accent — icy silver-blue. Cool, premium, pairs cleanly
+     against both the new dark hero gradient and the cool off-white.
+     Replaces the previous burnt-sienna coral. */
+  --accent:        #6e8aa8;
+  --accent-deep:   #4d6884;
+  --accent-soft:   #e6ecf3;
+  --accent-electric: #8ab0d6;   /* brighter highlight for energy moments */
+
+  /* Secondary cool accent — a warmer steel-slate. Used sparingly:
+     tier pills, NBT 'proficient' band edges, "ready" verdicts. */
+  --accent-cool:      #7c8a9b;
+  --accent-cool-deep: #5a6779;
+  --accent-cool-soft: #ebeef2;
+
+  /* Tier semantic — single cool tonal family with sage + amber for
+     the mid bands. Risk stays a clear red so danger reads instantly. */
+  --tier-1: #0e1722;           /* Tier 1 = navy-black, premium */
+  --tier-2: #b08020;           /* Tier 2 = warm gold (kept for contrast) */
+  --tier-3: #4f7a3a;           /* Tier 3 = sage (still on-track) */
+  --risk:   #c25548;           /* below-tier-3 = at risk (softer red, less coral-clash) */
+
+  /* Status. */
+  --good: #4f7a3a;             /* sage green */
+  --warn: #b08020;             /* warm gold */
+  --bad:  #c25548;             /* refined red */
+  --info: #4d6884;             /* steel-blue (matches accent-deep) */
+
+  /* Type */
+  --serif: "Fraunces", "GT Sectra", "Tiempos Headline", Georgia, serif;
+  --sans: "Inter Tight", "Söhne", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Geometry — tighter radii, more "product" less "publication". */
+  --r-1: 6px;
+  --r-2: 10px;
+  --r-3: 16px;
+  --r-4: 24px;
+
+  /* Shadows — single tight ring + a soft long shadow for elevation.
+     Quieter than before; lets gradients carry the visual weight. */
+  --shadow-card: 0 0 0 1px rgba(12,11,9,0.04), 0 1px 3px rgba(12,11,9,0.04);
+  --shadow-lift: 0 0 0 1px rgba(12,11,9,0.05), 0 6px 24px -10px rgba(12,11,9,0.14);
+  --shadow-pop:  0 0 0 1px rgba(12,11,9,0.06), 0 20px 50px -16px rgba(12,11,9,0.30);
+
+  /* White-label hooks (Tweaks rewrites these) */
+  --brand-name: "STELLENKLOOF";
+  --brand-sub: "SECONDARY · EST. 1962";
+
+  /* =========================================================================
+   * BRAND PALETTE — 4-colour system, fully customizable per school.
+   * Stellenkloof defaults: icy steel-blue / deeper steel / navy-black /
+   * mid navy. The dark hero "departure board" aesthetic — premium,
+   * cool, calm. Replacing these four swaps every gradient surface.
+   * =======================================================================*/
+  --brand-1: #6e8aa8;   /* primary — icy silver-blue */
+  --brand-2: #4d6884;   /* deeper steel */
+  --brand-3: #0e1722;   /* navy-black */
+  --brand-4: #2a3a52;   /* mid navy */
+
+  /* =========================================================================
+   * PRE-BAKED GRADIENTS — "departure-board" aesthetic. Dark navy hero
+   * surfaces with a single confident icy radial highlight upper-right.
+   * Pulled directly from the reference card.
+   * =======================================================================*/
+  --gradient-primary: linear-gradient(180deg, var(--brand-1) 0%, var(--brand-2) 100%);
+  --gradient-warm:    linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 100%);
+
+  /* Ink gradient — used by the default button + dark surfaces. A subtle
+     vertical wash from navy down to navy-black. */
+  --gradient-ink:     linear-gradient(180deg, #1a2434 0%, #0e1722 100%);
+
+  /* The hero "mesh" — the look the inspiration card has. Predominantly
+     navy-black, with a soft icy radial highlight in the upper-right
+     (the same place light would catch the glass) and a fainter
+     mid-navy wash in the lower-left for depth. */
+  --gradient-mesh:
+    radial-gradient(70% 70% at 85% -10%, color-mix(in srgb, var(--brand-1) 35%, transparent), transparent 60%),
+    radial-gradient(60% 60% at 5% 110%, color-mix(in srgb, var(--brand-4) 30%, transparent), transparent 60%),
+    linear-gradient(180deg, #1a2434 0%, #0e1722 100%);
+
+  --gradient-soft:    linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+  --gradient-trim:    linear-gradient(135deg, var(--brand-4) 0%, color-mix(in srgb, var(--brand-4) 70%, var(--brand-3)) 100%);
+
+  /* Glow rings — softer + cooler than before. */
+  --glow-primary:  0 8px 24px -10px color-mix(in srgb, var(--brand-1) 45%, transparent);
+  --glow-trim:     0 8px 24px -10px color-mix(in srgb, var(--brand-4) 50%, transparent);
+  --glow-ink:      0 12px 28px -12px rgba(14,23,34,0.45);
+
+  /* Page-level ambient — two very subtle radial washes at the top, in
+     icy + navy. Like the diffused light leak in the reference image. */
+  --gradient-page:
+    radial-gradient(900px 380px at 70% -120px, color-mix(in srgb, var(--brand-1) 6%, transparent), transparent 65%),
+    radial-gradient(700px 320px at 10% -80px,  color-mix(in srgb, var(--brand-4) 5%, transparent), transparent 65%);
+
+  /* Easing — used across hover, layout and modal transitions. */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* =============================================================================
+ * MOTION SYSTEM
+ *
+ * Keyframes:
+ *   fadeInUp    — translate up + fade in (default mount motion)
+ *   fadeIn      — opacity only (for low-energy reveals)
+ *   scaleIn     — pop in with overshoot (modals, popovers)
+ *   slideInRight — slide from the right (drawers, toasts)
+ *   shimmer     — used for loading skeletons
+ *   pulseGlow   — gentle attention pulse (urgency callouts)
+ *   countUp     — drives numeric counter animation via tabular flicker
+ *
+ * Utility classes that opt in to each. Stagger via inline `style={{
+ * animationDelay: '...' }}` or the `--stagger-i` custom property
+ * helper (see `.stagger > *` below).
+ * ===========================================================================*/
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+/* expandIn — used by ExpandableRailCard so the lifted card pops out
+ * from its rail position to centre with a brief overshoot. The
+ * translate(-50%,-50%) baseline is preserved so the modal stays
+ * centred while the scale animates. */
+@keyframes expandIn {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+  60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 30%, transparent); }
+  50%      { box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 0%, transparent); }
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.appear       { animation: fadeInUp 0.42s var(--ease-out) both; }
+.appear-fade  { animation: fadeIn   0.32s var(--ease-out) both; }
+.appear-pop   { animation: scaleIn  0.26s var(--ease-spring) both; }
+.appear-slide { animation: slideInRight 0.32s var(--ease-out) both; }
+.pulse-glow   { animation: pulseGlow 2.4s ease-in-out infinite; }
+
+/* Stagger helper — wrap children in `.stagger` and they fade-in-up with
+   a per-child delay. Cap at 12 children (anything more becomes a wall
+   anyway). */
+.stagger > *               { animation: fadeInUp 0.4s var(--ease-out) both; }
+.stagger > *:nth-child(1)  { animation-delay: 0ms; }
+.stagger > *:nth-child(2)  { animation-delay: 40ms; }
+.stagger > *:nth-child(3)  { animation-delay: 80ms; }
+.stagger > *:nth-child(4)  { animation-delay: 120ms; }
+.stagger > *:nth-child(5)  { animation-delay: 160ms; }
+.stagger > *:nth-child(6)  { animation-delay: 200ms; }
+.stagger > *:nth-child(7)  { animation-delay: 240ms; }
+.stagger > *:nth-child(8)  { animation-delay: 280ms; }
+.stagger > *:nth-child(9)  { animation-delay: 320ms; }
+.stagger > *:nth-child(10) { animation-delay: 360ms; }
+.stagger > *:nth-child(11) { animation-delay: 400ms; }
+.stagger > *:nth-child(12) { animation-delay: 440ms; }
+
+/* Reduced-motion respect. */
+@media (prefers-reduced-motion: reduce) {
+  .appear, .appear-fade, .appear-pop, .appear-slide,
+  .pulse-glow, .stagger > *, .card-lift {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* =============================================================================
+ * INTERACTIVE LIFT — every card-like surface that's clickable / hoverable
+ * opts in via `.card-lift`. Subtle: 2px up, shadow grows.
+ * ===========================================================================*/
+.card-lift {
+  transition: transform 0.20s var(--ease-out), box-shadow 0.20s var(--ease-out);
+  cursor: pointer;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+.card-lift:active {
+  transform: translateY(-1px);
+  transition: transform 0.10s var(--ease-out);
+}
+
+/* =============================================================================
+ * SHIMMER SKELETON — loading placeholder. Single base class; size with
+ * inline styles or width/height utilities.
+ * ===========================================================================*/
+.skeleton {
+  background:
+    linear-gradient(90deg,
+      var(--paper-2) 0%,
+      var(--paper-3) 50%,
+      var(--paper-2) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--r-1);
+}
+
+/* =============================================================================
+ * COUNT-UP — utility for animated number tickers. Adds a tabular-flicker
+ * that the CountUp React hook leans on for smooth integer transitions.
+ * ===========================================================================*/
+.count-up {
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================================
+ * MOTION FX — the magic-ui / animate-ui flavour set. Each is a small
+ * single-purpose utility class or keyframe that components opt into.
+ *
+ *   • gradient-text   — a sliding gradient inside text (used on big
+ *                       editorial headings + winning numbers)
+ *   • aurora-shift    — drifting radial gradients for dark-mode hero
+ *                       backgrounds
+ *   • draw-bar        — left-to-right fill animation for horizontal
+ *                       bar charts; pairs with the AnimatedBar React
+ *                       component
+ *   • draw-stroke     — line-stroke drawing animation for sparklines
+ *                       and SVG ring charts
+ *   • sparkle-pulse   — a small twinkle on emoji-shaped achievement
+ *                       cues
+ *   • confetti-piece  — one-shot rising-and-falling motion used by the
+ *                       Confetti React component
+ *   • glow-border     — slow-rotating conic gradient border around a
+ *                       card; used for the highest-tier achievement
+ *                       moment (e.g. "you hit the goal!").
+ * ===========================================================================*/
+
+/* --- gradient text ------------------------------------------------------- */
+@keyframes gradientSlide {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.gradient-text {
+  background-image: linear-gradient(120deg,
+    var(--accent) 0%,
+    var(--accent-electric) 35%,
+    var(--accent-cool) 70%,
+    var(--accent) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradientSlide 6s ease-in-out infinite alternate;
+}
+
+/* --- aurora background --------------------------------------------------- */
+@keyframes auroraDrift {
+  0%, 100% { background-position: 0% 50%, 100% 50%, 50% 0%; }
+  50%      { background-position: 100% 50%, 0% 50%, 50% 100%; }
+}
+.aurora {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.aurora::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  z-index: -1;
+  background-image:
+    radial-gradient(40% 50% at 20% 30%, color-mix(in srgb, var(--brand-1) 35%, transparent), transparent 60%),
+    radial-gradient(40% 50% at 80% 70%, color-mix(in srgb, var(--brand-4) 35%, transparent), transparent 60%),
+    radial-gradient(60% 40% at 50% 100%, color-mix(in srgb, var(--accent-electric) 22%, transparent), transparent 65%);
+  background-size: 250% 250%, 250% 250%, 250% 250%;
+  animation: auroraDrift 16s ease-in-out infinite;
+  filter: blur(28px) saturate(1.2);
+}
+
+/* --- bar draw ------------------------------------------------------------ */
+@keyframes drawBar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.draw-bar {
+  transform-origin: left center;
+  animation: drawBar 0.85s var(--ease-out) both;
+}
+
+/* --- stroke draw (used by sparkline + ring) ------------------------------ */
+@keyframes drawStroke {
+  from { stroke-dashoffset: var(--dash-length, 1000); }
+  to   { stroke-dashoffset: 0; }
+}
+.draw-stroke {
+  stroke-dasharray: var(--dash-length, 1000);
+  stroke-dashoffset: var(--dash-length, 1000);
+  animation: drawStroke 1.2s var(--ease-out) both;
+}
+
+/* --- sparkle (achievement twinkle) -------------------------------------- */
+@keyframes sparklePulse {
+  0%, 100% { transform: scale(1)   rotate(0deg);   opacity: 1; }
+  50%      { transform: scale(1.2) rotate(15deg);  opacity: 0.9; }
+}
+.sparkle { animation: sparklePulse 1.6s ease-in-out infinite; display: inline-block; }
+
+/* --- glow border (rotating conic gradient) ------------------------------ */
+@keyframes glowSpin {
+  to { transform: rotate(1turn); }
+}
+.glow-border {
+  position: relative;
+  isolation: isolate;
+  border-radius: inherit;
+}
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    var(--accent),
+    var(--accent-electric),
+    var(--accent-cool),
+    var(--accent)
+  );
+  animation: glowSpin 4s linear infinite;
+  filter: blur(8px);
+  opacity: 0.7;
+}
+.glow-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--paper);
+}
+
+/* --- confetti piece ----------------------------------------------------- */
+@keyframes confettiFall {
+  0%   { transform: translate(0, 0) rotate(0); opacity: 1; }
+  100% { transform: translate(var(--dx, 0), var(--dy, 220px)) rotate(var(--rot, 540deg)); opacity: 0; }
+}
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 12px;
+  border-radius: 2px;
+  pointer-events: none;
+  animation: confettiFall 1.4s var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-text, .aurora::before, .draw-bar, .draw-stroke,
+  .sparkle, .glow-border::before, .confetti-piece { animation: none !important; }
+}
+
+/* Reset-ish */
+*, *::before, *::after { box-sizing: border-box; }
+body, html { margin: 0; padding: 0; }
+
+/* Ambient page background — paper with a faint warm radial glow at the
+   top. Subtle enough that flat surfaces still feel paper-like, but adds
+   the depth the gradient-inspired designs lean on. */
+body { background-color: var(--paper); background-image: var(--gradient-page); background-attachment: fixed; }
+button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, select, textarea { font: inherit; }
+a { color: inherit; text-decoration: none; }
+
+/* Type primitives — sans-first hierarchy, serif reserved for the
+   biggest editorial moments. Tighter tracking on display sizes; loose
+   tracking on the eyebrow + meta to keep them readable at small sizes. */
+.t-display {
+  font-family: var(--sans);             /* changed from serif — cleaner, more "product" */
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  color: var(--ink);
+  font-style: normal;
+}
+.t-display--italic { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.025em; }
+.t-display--serif  { font-family: var(--serif); font-weight: 500; letter-spacing: -0.025em; }
+
+.t-eyebrow {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.t-num {
+  font-family: var(--sans);             /* sans numerals — cleaner stat displays */
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+.t-body {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  letter-spacing: -0.005em;
+}
+.t-meta {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+}
+
+/* Card — softer borders, gentle elevation */
+.card {
+  background: #fff;
+  border-radius: var(--r-3);
+  border: 1px solid rgba(12,11,9,0.05);
+  box-shadow: var(--shadow-card);
+}
+.card--paper { background: var(--paper); }
+.card--ink {
+  /* Rich multi-stop gradient over the ink base — adds depth without
+     reading as "decorated". Reference designs use this exact treatment
+     for hero strips. */
+  background: var(--gradient-mesh);
+  color: #f3eee5;
+  border-color: transparent;
+  box-shadow: var(--glow-ink);
+}
+.card--accent {
+  background: var(--gradient-primary);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: var(--glow-primary);
+}
+/* New variant — a softer "warm cream" gradient used by KPI tiles + soft
+   surfaces that want a hint of brand colour without going full accent. */
+.card--soft {
+  background: var(--gradient-soft);
+  color: var(--ink);
+  border-color: transparent;
+}
+/* New variant — trim (steel-blue) gradient for university / data-heavy
+   surfaces. */
+.card--trim {
+  background: var(--gradient-trim);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: var(--glow-trim);
+}
+
+/* Pill / chip */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  color: var(--ink-2);
+}
+.pill--ink { background: var(--ink); color: #f3eee5; border-color: var(--ink); }
+.pill--accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+.pill--soft { background: var(--paper-3); border-color: transparent; color: var(--ink-2); }
+.pill--tier1 { background: var(--ink); color: #f3eee5; border-color: var(--ink); }
+.pill--tier2 { background: #f5e3b8; color: var(--tier-2); border-color: transparent; }
+.pill--tier3 { background: #d8e3c2; color: var(--tier-3); border-color: transparent; }
+.pill--risk { background: #f7dac9; color: var(--risk); border-color: transparent; }
+
+/* Button */
+/* Buttons — tighter, more "product". Flat solid by default, lift on
+   hover. Glow effects pulled back: the action carries the weight, not
+   the chrome. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--r-2);                /* squarer than full-pill */
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  background: var(--ink);
+  color: var(--paper);
+  transition: transform 0.16s var(--ease-out), box-shadow 0.16s var(--ease-out), background 0.16s var(--ease-out);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 1px 2px rgba(12,11,9,0.10);
+}
+.btn:hover  { transform: translateY(-1px); background: var(--ink-2); box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 6px 16px -6px rgba(12,11,9,0.30); }
+.btn:active { transform: translateY(0); }
+.btn--accent {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand-1) 30%, transparent) inset, 0 1px 2px color-mix(in srgb, var(--brand-1) 25%, transparent);
+}
+.btn--accent:hover {
+  background: var(--accent-deep);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand-1) 30%, transparent) inset, 0 6px 18px -6px color-mix(in srgb, var(--brand-1) 50%, transparent);
+}
+.btn--ghost {
+  background: #fff; color: var(--ink);
+  border: 1px solid rgba(12,11,9,0.10);
+  box-shadow: none;
+}
+.btn--ghost:hover { background: var(--paper-2); border-color: rgba(12,11,9,0.18); }
+.btn--sm { padding: 6px 12px; font-size: 12px; }
+
+/* Big serif numerals */
+.numeral {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  letter-spacing: -0.05em;
+  line-height: 0.85;
+  color: var(--ink);
+}
+
+/* Marquee divider */
+.rule {
+  height: 1px;
+  background: var(--ink);
+  opacity: 0.12;
+  border: none;
+  margin: 0;
+}
+.rule--ink { opacity: 1; }
+
+/* Grid bg lines */
+.grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(26,23,20,0.06) 1px, transparent 1px);
+  background-size: 8.333% 100%;
+}
+
+/* Wordmark */
+.wordmark {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-size: 18px;
+  color: var(--ink);
+}
+.wordmark::before {
+  content: "★";
+  font-style: normal;
+  margin-right: 6px;
+  color: var(--accent);
+}
+
+/* Tab nav */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(26,23,20,0.12);
+}
+.tab {
+  padding: 14px 18px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color .12s, border-color .12s;
+}
+.tab:hover { color: var(--ink); }
+.tab.is-active { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+
+/* Sparkbar */
+.sparkbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 32px;
+}
+.sparkbar > span {
+  flex: 1;
+  background: var(--ink);
+  border-radius: 1px;
+}
+
+/* Avatar */
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--paper-3);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+/* Tag (subject) */
+.subj {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.subj::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+/* Sidebar nav (desktop) */
+/* Sidebar nav row — discrete, premium. Active state is a confident
+   ink background; hover is the gentlest paper tint. No gradient, no
+   shine — typography + a clear contrast does the lifting. */
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--r-2);
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.14s var(--ease-out), color 0.14s var(--ease-out);
+}
+.nav-row:hover { background: var(--paper-2); color: var(--ink); }
+.nav-row.is-active {
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+}
+.nav-row .ic { width: 16px; height: 16px; opacity: 0.65; }
+.nav-row.is-active .ic { opacity: 1; }
+
+/* Stat block */
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.stat__label {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.stat__value {
+  font-family: var(--serif);
+  font-size: 44px;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  color: var(--ink);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+.stat__delta {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+/* No scrollbars inside artboards */
+.no-scroll { overflow: hidden; }
+.no-scroll * { scrollbar-width: none; }
+.no-scroll *::-webkit-scrollbar { display: none; }

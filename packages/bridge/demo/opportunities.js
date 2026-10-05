@@ -1,0 +1,213 @@
+/**
+ * DEMO DATA — opportunities the Careers Service has published. Organisations,
+ * values and programme details are illustrative samples, not real offers.
+ */
+const inDays = (n) => {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+};
+
+const opp = (id, kind, f) => ({
+  id: `opp-${id}`,
+  kind,
+  faculties: [],
+  stages: [],
+  minAverage: null,
+  location: 'Cape Town',
+  uct: false,
+  ...f,
+});
+
+export function demoOpportunities() {
+  return [
+    // ── Employment ──
+    opp('ubuntu-grad', 'gradprog', {
+      title: 'Graduate Analyst Programme 2027',
+      organisation: 'Ubuntu Bank (sample)',
+      location: 'Johannesburg / Cape Town',
+      summary: 'Two-year rotational programme across risk, treasury and corporate banking. Full salary, study support for CFA level I.',
+      faculties: ['Commerce', 'Science'],
+      stages: ['Final year', 'Honours'],
+      minAverage: 65,
+      closingDate: inDays(18),
+      value: 'R380 000 starting salary',
+    }),
+    opp('atlantic-eng', 'gradprog', {
+      title: 'Candidate Engineer Programme',
+      organisation: 'Atlantic Infrastructure (sample)',
+      summary: 'Structured ECSA-aligned training for civil and electrical graduates, with site rotations across the Western Cape.',
+      faculties: ['Engineering & the Built Environment'],
+      stages: ['Final year', 'Honours'],
+      minAverage: 60,
+      closingDate: inDays(25),
+      value: 'R420 000 starting salary',
+    }),
+    opp('kasi-dev', 'job', {
+      title: 'Junior Software Engineer',
+      organisation: 'Kasi Cloud (sample)',
+      location: 'Cape Town · hybrid',
+      summary: 'Join a product team building payments for township businesses. Python/TypeScript; mentorship from senior engineers.',
+      faculties: ['Science', 'Engineering & the Built Environment', 'Commerce'],
+      stages: ['Final year', 'Honours', 'Masters (career change)'],
+      closingDate: inDays(12),
+      value: 'R360 000 – R420 000',
+    }),
+    opp('hollard-articles', 'job', {
+      title: 'Candidate Attorney (Articles) 2027',
+      organisation: 'Hollard & Ndlovu Attorneys (sample)',
+      location: 'Johannesburg',
+      summary: 'Two-year articles across litigation, commercial and competition law. Vac-work alumni fast-tracked.',
+      faculties: ['Law'],
+      stages: ['Final year'],
+      minAverage: 65,
+      closingDate: inDays(9),
+    }),
+    opp('ubuntu-media-intern', 'internship', {
+      title: 'Brand & Content Internship (6 months)',
+      organisation: 'Ubuntu Media Group (sample)',
+      location: 'Durban · remote-friendly',
+      summary: 'Paid internship on campaigns for national brands. Portfolio required.',
+      faculties: ['Humanities', 'Commerce'],
+      closingDate: inDays(21),
+      value: 'R12 000 / month',
+    }),
+    opp('health-community', 'job', {
+      title: 'Community Service Physiotherapist placements',
+      organisation: 'Western Cape Health (sample)',
+      summary: 'Placement support and application guidance for 2027 community-service posts.',
+      faculties: ['Health Sciences'],
+      stages: ['Final year'],
+      closingDate: inDays(30),
+    }),
+    opp('workready', 'workready', {
+      title: 'Work-Readiness Bootcamp — November intake',
+      organisation: 'UCT Careers Service',
+      summary: 'Five days of workplace skills, CV and interview practice, ending in a speed-meet with 20 hiring employers.',
+      closingDate: inDays(14),
+      uct: true,
+      value: 'Free · certificate',
+    }),
+    opp('youth-placement', 'workready', {
+      title: '12-month First-Job Placement',
+      organisation: 'Youth employment partner network (sample)',
+      location: 'Countrywide',
+      summary: 'A paid first job for graduates who have not yet found work — placed with partner employers, with a reference at the end.',
+      stages: ['Final year', 'Graduate'],
+      closingDate: inDays(40),
+      value: 'Monthly stipend',
+    }),
+
+    // ── Further study ──
+    opp('uct-hons-cs', 'uct-programme', {
+      title: 'BSc (Hons) Computer Science',
+      organisation: 'UCT Faculty of Science',
+      summary: 'One-year Honours with specialisations in AI, data and systems. Strong industry links.',
+      faculties: ['Science', 'Engineering & the Built Environment'],
+      stages: ['Final year'],
+      minAverage: 65,
+      closingDate: inDays(35),
+      uct: true,
+    }),
+    opp('uct-hons-econ', 'uct-programme', {
+      title: 'BCom (Hons) Economics',
+      organisation: 'UCT School of Economics',
+      summary: 'A rigorous Honours year that feeds the Masters in Economics and policy roles.',
+      faculties: ['Commerce'],
+      stages: ['Penultimate year', 'Final year'],
+      minAverage: 65,
+      closingDate: inDays(35),
+      uct: true,
+    }),
+    opp('uct-llm', 'uct-programme', {
+      title: 'LLM in Human Rights Law',
+      organisation: 'UCT Faculty of Law',
+      summary: 'Coursework Masters with a clinical litigation component.',
+      faculties: ['Law'],
+      stages: ['Final year'],
+      minAverage: 68,
+      closingDate: inDays(45),
+      uct: true,
+    }),
+    opp('uct-pgdip', 'uct-programme', {
+      title: 'PG Diploma in Management Practice',
+      organisation: 'UCT Graduate School of Business',
+      summary: 'A one-year management diploma for non-commerce graduates moving into business roles.',
+      stages: ['Final year', 'Honours', 'Graduate'],
+      minAverage: 60,
+      closingDate: inDays(50),
+      uct: true,
+    }),
+    opp('ext-datasci', 'external-programme', {
+      title: 'MSc Data Science (conversion)',
+      organisation: 'Partner university, UK (sample)',
+      location: 'Online / UK',
+      summary: 'A one-year conversion Masters for STEM graduates moving into data.',
+      faculties: ['Science', 'Commerce', 'Engineering & the Built Environment'],
+      stages: ['Final year', 'Honours', 'Masters (career change)'],
+      minAverage: 65,
+      closingDate: inDays(60),
+    }),
+    opp('karoo-bursary', 'bursary', {
+      title: 'Engineering & Geoscience Postgraduate Bursary',
+      organisation: 'Karoo Mining (sample)',
+      summary: 'Full fees plus living allowance for Honours/Masters in engineering or geoscience, with vac work.',
+      faculties: ['Engineering & the Built Environment', 'Science'],
+      minAverage: 65,
+      closingDate: inDays(20),
+      value: 'Full fees + R8 000 / month',
+    }),
+    opp('ubuntu-bursary', 'bursary', {
+      title: 'Honours Bursary — Finance & Economics',
+      organisation: 'Ubuntu Bank (sample)',
+      summary: 'Covers Honours tuition for students intending to join the bank’s graduate programme.',
+      faculties: ['Commerce'],
+      stages: ['Penultimate year', 'Final year'],
+      minAverage: 70,
+      closingDate: inDays(16),
+      value: 'Full tuition',
+    }),
+    opp('cape-futures', 'scholarship', {
+      title: 'Cape Futures Leadership Scholarship',
+      organisation: 'Cape Futures Trust (sample)',
+      summary: 'For postgraduate students with a record of service and leadership. Includes a leadership programme.',
+      stages: ['Final year', 'Honours'],
+      minAverage: 70,
+      closingDate: inDays(28),
+      value: 'R150 000 / year',
+    }),
+
+    // ── Start-up & self-discovery ──
+    opp('founders', 'venture-support', {
+      title: 'Founders Lab — Student Venture Programme',
+      organisation: 'UCT innovation hub (sample)',
+      summary: '12 weeks of coaching, R50 000 seed grant and a demo day for student and recent-graduate founders.',
+      closingDate: inDays(22),
+      uct: true,
+      value: 'R50 000 seed grant',
+    }),
+    opp('literacy', 'volunteer', {
+      title: 'Literacy Tutor — Saturday school',
+      organisation: 'Cape Literacy Project (sample)',
+      summary: 'Tutor Grade 4–7 learners in reading on Saturday mornings. Great for teaching, psychology and social-impact paths.',
+      closingDate: inDays(30),
+      value: 'Volunteer · 3 hrs / week',
+    }),
+    opp('ocean-gap', 'gap', {
+      title: 'Coastal Conservation Gap Programme',
+      organisation: 'Two Oceans Conservation (sample)',
+      location: 'Western Cape coast',
+      summary: 'A structured 6-month gap: field research, community work and a career-exploration portfolio.',
+      closingDate: inDays(33),
+      value: 'Stipend + accommodation',
+    }),
+    opp('ngo-fellow', 'volunteer', {
+      title: 'Social Impact Fellowship (12 months)',
+      organisation: 'Ubuntu Foundation (sample)',
+      summary: 'Paid fellowship placing graduates in community NGOs — a year to discover what you care about.',
+      stages: ['Final year', 'Graduate'],
+      closingDate: inDays(26),
+      value: 'R9 500 / month',
+    }),
+  ];
+}
