@@ -71,12 +71,29 @@ function Showcase() {
   const recent = [...log].reverse().slice(0, 40);
   const [layout, setLayout] = useState('split');
   const [guide, setGuide] = useState(true);
+  // Collapsed bus = more room for the two apps; remembered per browser.
+  const [busOpen, setBusOpen] = useState(() => {
+    try {
+      return localStorage.getItem('showcase-bus') !== 'closed';
+    } catch {
+      return true;
+    }
+  });
+  const toggleBus = () =>
+    setBusOpen((open) => {
+      try {
+        localStorage.setItem('showcase-bus', open ? 'closed' : 'open');
+      } catch {
+        /* ignore */
+      }
+      return !open;
+    });
   const [edosKey, setEdosKey] = useState(0);
   const fresh = log.filter((e) => e.seq > startSeq.current);
   const seen = new Set(fresh.map((e) => e.type));
 
   return (
-    <div className={`sc ${layout}`}>
+    <div className={`sc ${layout} ${busOpen ? '' : 'bus-closed'}`}>
       <header className="sc-top">
         <div className="sc-brand">
           <span className="sc-mark">UCT</span>
@@ -99,6 +116,9 @@ function Showcase() {
           </div>
           <button className="sc-btn ghost" onClick={() => setGuide(!guide)}>
             {guide ? 'Hide guide' : 'Show guide'}
+          </button>
+          <button className="sc-btn ghost" onClick={toggleBus}>
+            {busOpen ? 'Hide bus' : 'Show bus'}
           </button>
           <button
             className="sc-btn"
@@ -171,10 +191,16 @@ function Showcase() {
           <span>
             {log.length} events · {fresh.length} this session · no shared database — every fact crosses as an event
           </span>
-          <button className="sc-link" onClick={() => setEdosKey((k) => k + 1)} title="Reload the EdOS pane">
-            Reload EdOS pane
+          {busOpen && (
+            <button className="sc-link" onClick={() => setEdosKey((k) => k + 1)} title="Reload the EdOS pane">
+              Reload EdOS pane
+            </button>
+          )}
+          <button className="sc-bus-toggle" onClick={toggleBus}>
+            {busOpen ? 'Hide ▾' : `Show${fresh.length ? ` · ${fresh.length} new` : ''} ▴`}
           </button>
         </div>
+        {busOpen && (
         <div className="sc-bus-list">
           {recent.map((e) => {
             const isNew = e.seq > startSeq.current;
@@ -189,6 +215,7 @@ function Showcase() {
             );
           })}
         </div>
+        )}
       </footer>
     </div>
   );

@@ -57,6 +57,10 @@ button { font: inherit; cursor: pointer; }
 .sc-bus-head { display: flex; align-items: center; gap: 14px; padding: 8px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); font-size: 12px; }
 .sc-bus-head strong { color: #fff; font-size: 13px; }
 .sc-bus-head span { color: rgba(207, 216, 227, 0.6); flex: 1; }
+.sc.bus-closed { grid-template-rows: auto minmax(0, 1fr) auto; }
+.sc.bus-closed .sc-bus-head { border-bottom: 0; }
+.sc-bus-toggle { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.06); color: #fff; font-size: 12px; font-weight: 600; padding: 4px 11px; border-radius: 8px; }
+.sc-bus-toggle:hover { background: rgba(255, 255, 255, 0.14); }
 .sc-link { border: 0; background: none; color: rgba(207, 216, 227, 0.7); text-decoration: underline; font-size: 12px; }
 .sc-bus-list { overflow-y: auto; padding: 4px 8px 10px; }
 .sc-ev { display: grid; grid-template-columns: 116px 210px minmax(0, 1fr) 170px 80px; gap: 12px; align-items: center; padding: 6px 8px; border-radius: 8px; font-size: 12.5px; }
@@ -80,5 +84,6 @@ button { font: inherit; cursor: pointer; }
 }
 @media (max-width: 760px) {
   .sc { grid-template-rows: auto minmax(0, 1fr) 160px; }
+  .sc.bus-closed { grid-template-rows: auto minmax(0, 1fr) auto; }
   .sc.split .sc-pane.careers { display: none; }
 }
