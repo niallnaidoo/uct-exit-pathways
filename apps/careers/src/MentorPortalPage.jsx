@@ -403,6 +403,8 @@ function MyMentees({ ctx, active, offered }) {
             key={m.id}
             mentee={m.mentee}
             full
+            mentorAvailability={ctx.mentor.availability}
+            academics={m.academics}
             footer={
               <div className="ms-milestones">
                 <div className="ms-mini-label">
@@ -509,6 +511,7 @@ function CandidateList({ ctx, list, title, sub, empty, filters }) {
               key={t.id}
               mentee={t}
               match={t.match}
+              mentorAvailability={ctx.mentor.availability}
               footer={
                 <div className="ms-card-actions">
                   {t.offered ? (

@@ -11,7 +11,7 @@ const fmt = (d) => new Date(`${d}T12:00:00`).toLocaleDateString('en-ZA', { day: 
 const daysTo = (d) => Math.ceil((new Date(`${d}T12:00:00`) - Date.now()) / 86400000);
 
 export function Marks() {
-  const { me } = useEdos();
+  const { me, match } = useEdos();
   const today = new Date().toISOString().slice(0, 10);
   const test = nextTest(me);
   const gb = gradebookSummary(me);
@@ -25,6 +25,13 @@ export function Marks() {
       <header className="ed-page-head">
         <div className="t-eyebrow">{me.degree}</div>
         <h1 className="t-display">Marks &amp; tests</h1>
+        {match?.academics?.shared && (
+          <p className="t-meta" style={{ marginTop: 6 }}>
+            <Synced>
+              Shared with your mentor {match.mentor.firstName} {match.mentor.lastName}
+            </Synced>
+          </p>
+        )}
       </header>
       <div className="ed-stat-row">
         <div className="card ed-stat">

@@ -132,3 +132,14 @@ export function syncPayload(s) {
     gradebook: gradebookSummary(s),
   };
 }
+
+/** What a student shares with their own mentor: subjects, marks and tests. */
+export function academicsFor(s) {
+  return (s?.modules ?? []).map((m) => ({
+    code: m.code,
+    name: m.name,
+    credits: m.credits,
+    mark: m.mark,
+    assessments: m.assessments.map(({ label, date, weight, mark }) => ({ label, date, weight, mark })),
+  }));
+}

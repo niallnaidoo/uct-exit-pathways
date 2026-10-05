@@ -10,7 +10,7 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { publish, readLog, subscribe, newId, resetDemo as resetBus } from '../../../../packages/bridge/bus.js';
 import { project, eligibility, isOpen, daysUntil } from '../../../../packages/bridge/project.js';
-import { demoRoster, syncPayload } from '../../../../packages/bridge/demo/roster.js';
+import { demoRoster, syncPayload, academicsFor } from '../../../../packages/bridge/demo/roster.js';
 import { kindMeta } from '../../../../packages/bridge/vocab.js';
 import { getSession, setSession } from '../../../../packages/demo-auth/session.js';
 
@@ -110,6 +110,7 @@ function buildView(sn) {
         .filter((mt) => mt.matchId === x.id)
         .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)),
       messages: m.messages.filter((msg) => msg.matchId === x.id),
+      academics: m.academics[x.id] ?? null,
     };
   const interventions = Object.values(m.interventions)
     .filter((i) => i.studentNumber === me.studentNumber)
@@ -219,8 +220,15 @@ export const updateApplication = (applicationId, status) =>
 export const requestMentor = (body) =>
   emit('mentorship.requested', { studentNumber: me().studentNumber, ...body });
 
-export const respondToOffer = (matchId, accept, reason) =>
+export function respondToOffer(matchId, accept, reason) {
   emit('mentorship.offer.responded', { matchId, studentNumber: me().studentNumber, accept, reason: reason || '' });
+  // Accepting shares marks & tests with that mentor (the student was told on the offer card).
+  if (accept) shareAcademics(matchId, true);
+}
+
+/** Share (or stop sharing) subjects, marks and tests with one mentor. */
+export const shareAcademics = (matchId, shared) =>
+  emit('mentorship.academics.shared', { matchId, studentNumber: me().studentNumber, shared, modules: shared ? academicsFor(me()) : [] });
 
 export const sendMessage = (matchId, text) =>
   emit('mentorship.message.sent', { messageId: newId('msg'), matchId, from: 'mentee', text });

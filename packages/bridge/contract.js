@@ -52,7 +52,13 @@ export const EVENTS = {
     from: 'edos',
     title: 'Mentor requested',
     why: 'Student asks for an alumni mentor; their academic profile comes with it automatically.',
-    payload: '{ studentNumber, careerInterests, skillsWanted, goals, languages, meetingFormat, availability, accessNeeds }',
+    payload: '{ studentNumber, careerInterests, skillsWanted, goals, languages, meetingFormat, availability: ["Tue-evening", …], accessNeeds }',
+  },
+  'mentorship.academics.shared': {
+    from: 'edos',
+    title: 'Marks & tests shared with mentor',
+    why: 'With the student’s consent (on accepting a mentor), their subjects, marks and upcoming tests go to that mentor only — never to the wider Careers Service.',
+    payload: '{ matchId, studentNumber, shared, modules: [{ code, name, credits, mark, assessments: [{ label, date, weight, mark }] }] }',
   },
   'mentorship.offer.responded': {
     from: 'edos',

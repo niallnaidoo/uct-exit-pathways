@@ -464,3 +464,14 @@
 .cr-src-dot.edos { background: #6e8aa8; }
 .cr-src-dot.careers { background: var(--green-bright); }
 .cr-pws { display: flex; gap: 4px; flex-wrap: wrap; }
+
+/* ── Tidy-up: nothing in a table wraps awkwardly ── */
+.tbl .pill, .cr-tbl .pill, .btn, .tab { white-space: nowrap; }
+.cr-tbl td { padding-top: 12px; padding-bottom: 12px; }
+.cr-tbl td:last-child { width: 1%; white-space: nowrap; }
+.cr-tbl .cell-id { min-width: 190px; }
+.cr-why { display: flex; flex-wrap: wrap; gap: 4px; max-width: 420px; }
+.cr-why span { font-size: 11.5px; background: var(--pw-seeking-bg); color: var(--pw-seeking); border-radius: 6px; padding: 3px 8px; white-space: nowrap; }
+.card { margin-bottom: 16px; }
+.app-main { padding-top: 22px; }
+.cr-support-cell { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }

@@ -147,6 +147,11 @@ function OppCard({ o, highlight, onApply }) {
         {o.workMode && o.workMode !== 'On-site' ? ` · ${o.workMode}` : ''}
         {o.value ? ` · ${o.value}` : ''}
       </div>
+      {o.positions ? (
+        <div className="ed-positions">
+          {o.positions} position{o.positions === 1 ? '' : 's'} available
+        </div>
+      ) : null}
       {o.summary && <p className="t-body">{o.summary}</p>}
       <div className={`ed-elig ${el.ok ? 'ok' : 'no'}`}>
         <Icon name={el.ok ? 'check' : 'x'} size={13} />

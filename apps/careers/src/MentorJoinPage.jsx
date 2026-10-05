@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import * as api from './api.js';
 import { IS_DEMO } from './api.js';
 import { Icon } from './atoms.jsx';
+import { availabilityText } from '../../../packages/bridge/vocab.js';
 import {
   FACULTIES,
   INDUSTRIES,
@@ -31,6 +32,7 @@ import {
   Field,
   PhotoInput,
   MentorProfileCard,
+  AvailabilityGrid,
   publicLink,
 } from './mentorship-ui.jsx';
 
@@ -65,6 +67,7 @@ const BLANK = {
   frequency: '',
   period: '',
   maxMentees: 2,
+  availability: [],
   consents: {},
   referees: [
     { name: '', email: '' },
@@ -119,6 +122,7 @@ function missing(step, f) {
     if (!f.meetingFormat) out.push('meeting format');
     if (!f.frequency) out.push('frequency');
     if (!f.period) out.push('mentoring period');
+    if (!f.availability?.length) out.push('when you’re usually free');
   }
   if (step === 'boundaries') {
     if (CONSENTS.some((c) => !f.consents[c.key])) out.push('accept each agreement');
@@ -546,6 +550,9 @@ function PrefsStep({ form, set }) {
       <Field label="Preferred mentoring period" required>
         <Segmented options={PERIODS} value={form.period} onChange={(period) => set({ period })} />
       </Field>
+      <Field label="When are you usually free?" required hint="Students see where your free times overlap with theirs.">
+        <AvailabilityGrid value={form.availability ?? []} onChange={(availability) => set({ availability })} />
+      </Field>
       <Field label="Maximum number of mentees" hint="You’ll never be offered more than this at once.">
         <div className="ms-stepper">
           <button type="button" onClick={() => set({ maxMentees: Math.max(1, form.maxMentees - 1) })} aria-label="Fewer">
@@ -615,6 +622,7 @@ function ReviewStep({ form, onEdit }) {
     ['Skills to mentor', form.skillsToMentor, 2],
     ['Academic stage', form.supportStages, 2],
     ['Mentoring', [form.mentoringType, form.meetingFormat, form.frequency, form.period, `Up to ${form.maxMentees} mentees`], 3],
+    ['Usually free', [availabilityText(form.availability)], 3],
   ];
   return (
     <div>

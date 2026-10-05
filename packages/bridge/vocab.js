@@ -223,3 +223,25 @@ export const APPLICATION_FIELDS = [
   { key: 'linkedin', label: 'LinkedIn profile', type: 'url', hint: 'https://www.linkedin.com/in/…' },
 ];
 export const DEFAULT_REQUIREMENTS = { cv: true, coverLetter: true, transcript: true, linkedin: false };
+
+/* ── Availability — a simple day × time-slot grid, so free times are easy to match ── */
+export const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+export const SLOTS = [
+  { key: 'morning', label: 'Morning', time: '08:00–12:00' },
+  { key: 'lunch', label: 'Lunch', time: '12:00–14:00' },
+  { key: 'afternoon', label: 'Afternoon', time: '14:00–17:00' },
+  { key: 'evening', label: 'Evening', time: '17:00–20:00' },
+];
+/** Availability is stored as keys like "Tue-evening". */
+export const slotKey = (day, slot) => `${day}-${slot}`;
+export const slotMeta = (key) => SLOTS.find((s) => s.key === key);
+
+/** "Mon & Wed · Lunch (12:00–14:00); Thu · Evening (17:00–20:00)" */
+export function availabilityText(list) {
+  if (!Array.isArray(list) || !list.length) return typeof list === 'string' ? list : '';
+  const bySlot = SLOTS.map((s) => ({ s, days: DAYS.filter((d) => list.includes(slotKey(d, s.key))) })).filter((x) => x.days.length);
+  return bySlot.map(({ s, days }) => `${days.join(' & ')} · ${s.label} (${s.time})`).join('; ');
+}
+
+/** Times two people are both free. */
+export const sharedSlots = (a = [], b = []) => (Array.isArray(a) && Array.isArray(b) ? a.filter((k) => b.includes(k)) : []);

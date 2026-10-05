@@ -24,6 +24,7 @@ export function emptyModel() {
     destinations: {}, // studentNumber → destination report
     sent: {}, // studentNumber → [{ opportunityId, message, sentBy, at }] (Careers hand-picked)
     lastViewed: {}, // studentNumber → when they last opened Opportunities in EdOS
+    academics: {}, // matchId → { shared, modules, at } — the student's marks & tests, for their mentor only
     timeline: {}, // studentNumber → events touching them (newest last)
   };
 }
@@ -127,6 +128,9 @@ export function apply(m, e) {
           Object.assign(o, { status: 'declined', declineReason: 'Student chose another mentor', respondedAt: e.at });
       break;
     }
+    case 'mentorship.academics.shared':
+      m.academics[p.matchId] = { shared: !!p.shared, modules: p.shared ? p.modules ?? [] : [], at: e.at };
+      break;
     case 'mentorship.match.updated': {
       const x = m.matches[p.matchId];
       if (x) Object.assign(x, { status: p.status, closeReason: p.reason, closedAt: e.at });

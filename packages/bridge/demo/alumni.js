@@ -35,6 +35,7 @@ export function demoAlumni() {
       frequency: 'Fortnightly',
       period: '12 months',
       maxMentees: 3,
+      availability: ['Tue-evening', 'Thu-evening', 'Sat-morning'],
       consents: { conduct: true, safeguarding: true, popia: true },
       referees: [
         { name: 'T. Adams', email: 'referee1@example.com' },
@@ -70,6 +71,7 @@ export function demoAlumni() {
       frequency: 'Monthly',
       period: '12 months',
       maxMentees: 2,
+      availability: ['Mon-morning', 'Wed-morning', 'Fri-afternoon'],
       sportingCode: 'Rugby — Ikey Tigers',
       consents: { conduct: true, safeguarding: true, popia: true },
       appliedAt: at(-30),
@@ -102,6 +104,7 @@ export function demoAlumni() {
       frequency: 'Fortnightly',
       period: '6 months',
       maxMentees: 2,
+      availability: ['Tue-lunch', 'Thu-lunch'],
       consents: { conduct: true, safeguarding: true, popia: true },
       appliedAt: at(-25),
       approvedAt: at(-21),
@@ -133,6 +136,7 @@ export function demoAlumni() {
       frequency: 'Fortnightly',
       period: '6 months',
       maxMentees: 4,
+      availability: ['Mon-evening', 'Wed-evening', 'Sat-morning'],
       consents: { conduct: true, safeguarding: true, popia: true },
       appliedAt: at(-20),
       approvedAt: at(-18),
@@ -164,6 +168,7 @@ export function demoAlumni() {
       frequency: 'Monthly',
       period: '12 months',
       maxMentees: 2,
+      availability: ['Mon-lunch', 'Thu-afternoon'],
       consents: { conduct: true, safeguarding: true, popia: true },
       referees: [
         { name: 'Dr K. Naidoo', email: 'referee3@example.com' },
@@ -198,6 +203,7 @@ export function demoAlumni() {
       frequency: 'Monthly',
       period: '6 months',
       maxMentees: 3,
+      availability: ['Wed-evening', 'Sat-morning'],
       consents: { conduct: true, safeguarding: true, popia: true },
       appliedAt: at(-1),
     },
@@ -209,11 +215,11 @@ export function publicMentor(m) {
   const {
     id, firstName, lastName, gradYear, qualification, faculty, role, organisation, industry,
     location, expertise, languages, bio, linkedin, photo, mentoringType, meetingFormat,
-    frequency, period, sportingCode,
+    frequency, period, sportingCode, availability,
   } = m;
   return {
     id, firstName, lastName, gradYear, qualification, faculty, role, organisation, industry,
     location, expertise, languages, bio, linkedin, photo, mentoringType, meetingFormat,
-    frequency, period, sportingCode,
+    frequency, period, sportingCode, availability,
   };
 }

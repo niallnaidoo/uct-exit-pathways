@@ -14,7 +14,7 @@ export {
   STAGES,
   MILESTONES,
 } from '../../../packages/bridge/vocab.js';
-import { MILESTONES } from '../../../packages/bridge/vocab.js';
+import { MILESTONES, sharedSlots } from '../../../packages/bridge/vocab.js';
 
 export const MENTORING_TYPES = ['1:1 mentoring', 'Group mentoring', 'Either'];
 export const MEETING_FORMATS = ['Online', 'In person', 'Either'];
@@ -114,6 +114,11 @@ export function matchScore(mentor, mentee) {
   if (langs.length) {
     score += 5;
     reasons.push(`Speaks ${langs[0]}`);
+  }
+  const both = sharedSlots(mentor.availability, mentee.availability);
+  if (both.length) {
+    score += 10;
+    reasons.push(`Free at the same time${both.length > 1 ? 's' : ''}`);
   }
   const fmt = mentor.meetingFormat;
   if (!fmt || fmt === 'Either' || !mentee.meetingFormat || mentee.meetingFormat === 'Either' || fmt === mentee.meetingFormat) {

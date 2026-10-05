@@ -126,6 +126,7 @@ export function OpportunityBoard({ scope = 'careers', employer, toast }) {
                     ))}
                   </div>
                   <div className="ob-meta">
+                    {o.positions ? <span>{o.positions} position{o.positions === 1 ? '' : 's'}</span> : null}
                     <span>{o.stats.eligible} eligible</span>
                     <span>{o.closed ? 'Closed' : d == null ? 'Open' : d < 0 ? 'Closed' : `Closes in ${d}d`}</span>
                   </div>
@@ -243,7 +244,7 @@ export function OpportunityWizard({ scope, employer, toast, onClose }) {
                   </label>
                 )}
                 <label className="fld">
-                  <span>{pathway === 'study' ? 'Awards available' : 'Positions'}</span>
+                  <span>Number of positions available</span>
                   <input type="number" min="1" value={f.positions} onChange={(e) => set({ positions: e.target.value })} />
                 </label>
               </div>
@@ -332,6 +333,8 @@ export function OpportunityWizard({ scope, employer, toast, onClose }) {
               <dl className="ms-dl">
                 <dt>For</dt>
                 <dd>{targeting(draft)}</dd>
+                <dt>Positions</dt>
+                <dd>{f.positions || 'Not set'}</dd>
                 <dt>Reaches</dt>
                 <dd>
                   {reach} student{reach === 1 ? '' : 's'} right now
@@ -411,16 +414,16 @@ function OpportunityDrawer({ id, scope, toast, onClose }) {
         <div className="cr-drawer-body">
           <div className="cr-facts">
             <div>
+              <span>Positions</span>
+              <strong>{o.positions ?? '—'}</strong>
+            </div>
+            <div>
               <span>Eligible</span>
               <strong>{o.stats.eligible}</strong>
             </div>
             <div>
               <span>Applicants</span>
               <strong>{applicants.length}</strong>
-            </div>
-            <div>
-              <span>Sent to</span>
-              <strong>{data.sentTo.length}</strong>
             </div>
             <div>
               <span>Closes</span>

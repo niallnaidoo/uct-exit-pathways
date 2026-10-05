@@ -5,7 +5,7 @@
  * Careers publishing opportunities, students declaring pathways and applying,
  * mentors being matched. Each app builds its own view from these events.
  */
-import { demoRoster, syncPayload } from './roster.js';
+import { demoRoster, syncPayload, academicsFor } from './roster.js';
 import { demoOpportunities } from './opportunities.js';
 import { demoAlumni, publicMentor } from './alumni.js';
 
@@ -89,9 +89,20 @@ export function seedHistory() {
   push(10, 'opportunity.sent', 'careers', { opportunityId: 'opp-ubuntu-grad', studentNumbers: ['STHLIN006', 'ZNGAMA002', 'CELNOM010'], message: 'Applications close soon — your marks and interests fit this programme well.', sentBy: 'Careers Service' });
   push(5, 'opportunity.sent', 'careers', { opportunityId: 'opp-kasi-dev', studentNumbers: ['HNDAAL012', 'CLKETH005'], message: 'A strong first role for anyone moving into software or data.', sentBy: 'Careers Service' });
 
+  // When each student is usually free (day × slot keys).
+  const FREE = {
+    MLFKAG001: ['Tue-evening', 'Thu-evening', 'Sat-morning'],
+    JCBRUB003: ['Mon-morning', 'Wed-morning', 'Fri-afternoon'],
+    STHLIN006: ['Mon-lunch', 'Wed-lunch', 'Thu-evening'],
+    NDBZIN004: ['Tue-lunch', 'Thu-lunch', 'Wed-evening'],
+    HNDAAL012: ['Tue-afternoon', 'Fri-lunch'],
+    CLKETH005: ['Mon-evening', 'Wed-evening', 'Sat-morning'],
+    ZNGAMA002: ['Mon-lunch', 'Thu-lunch', 'Tue-evening'],
+  };
+
   // EdOS: mentor requests (profile travels with the request).
   const req = (d, sn, f) =>
-    push(d, 'mentorship.requested', 'edos', { studentNumber: sn, languages: ['English'], meetingFormat: 'Either', availability: '', accessNeeds: '', ...f });
+    push(d, 'mentorship.requested', 'edos', { studentNumber: sn, languages: ['English'], meetingFormat: 'Either', availability: FREE[sn] ?? [], accessNeeds: '', ...f });
   req(33, 'MLFKAG001', { careerInterests: ['Finance & Banking'], skillsWanted: ['Graduate programmes', 'Mock interviews'], goals: 'Land a place on a bank or audit graduate programme for 2027.', languages: ['English', 'Setswana'] });
   req(27, 'JCBRUB003', { careerInterests: ['Engineering', 'Public Sector'], skillsWanted: ['Career mapping', 'Workplace readiness'], goals: 'Decide between a consulting firm and a municipal placement.', meetingFormat: 'In person', languages: ['English', 'Afrikaans'] });
   req(21, 'STHLIN006', { careerInterests: ['Finance & Banking', 'Technology'], skillsWanted: ['CV & LinkedIn', 'Applications strategy'], goals: 'Move into data science in financial services.', languages: ['English', 'isiZulu'] });
@@ -104,12 +115,18 @@ export function seedHistory() {
   const offer = (d, matchId, mentorId, sn, score) =>
     push(d, 'mentorship.offer.made', 'careers', { matchId, mentorId, studentNumber: sn, score, mentor: publicMentor(mentors[mentorId]) });
   const answer = (d, matchId, sn) => push(d, 'mentorship.offer.responded', 'edos', { matchId, studentNumber: sn, accept: true });
+  // On accepting, the student shares their marks & tests with that mentor (consent in EdOS).
+  const share = (d, matchId, sn) =>
+    push(d, 'mentorship.academics.shared', 'edos', { matchId, studentNumber: sn, shared: true, modules: academicsFor(roster.find((x) => x.studentNumber === sn)) });
   offer(30, 'mat-1', 'alm-demo-1', 'MLFKAG001', 88);
   answer(29, 'mat-1', 'MLFKAG001');
+  share(29, 'mat-1', 'MLFKAG001');
   offer(24, 'mat-2', 'alm-demo-2', 'JCBRUB003', 92);
   answer(23, 'mat-2', 'JCBRUB003');
+  share(23, 'mat-2', 'JCBRUB003');
   offer(18, 'mat-3', 'alm-demo-1', 'STHLIN006', 74);
   answer(17, 'mat-3', 'STHLIN006');
+  share(17, 'mat-3', 'STHLIN006');
   offer(2, 'mat-4', 'alm-demo-3', 'NDBZIN004', 85); // waiting for Zinhle
   push(28, 'mentorship.milestone.updated', 'careers', { matchId: 'mat-1', key: 'kickoff', done: true });
   push(12, 'mentorship.milestone.updated', 'careers', { matchId: 'mat-1', key: 'mapping', done: true });

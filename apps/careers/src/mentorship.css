@@ -1545,3 +1545,36 @@
 }
 
 .ms-portal-right { display: flex; align-items: center; gap: 10px; }
+
+/* Free times + shared marks & tests */
+.ms-free { display: flex; gap: 7px; align-items: flex-start; font-size: 12.5px; color: var(--green-mid); background: var(--green-pale); border-radius: 8px; padding: 7px 10px; }
+.ms-free svg { width: 14px; height: 14px; flex: none; margin-top: 1px; }
+.ms-academics { border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; }
+.ms-academics.off { padding: 9px 12px; font-size: 12.5px; color: var(--muted); border-style: dashed; }
+.ms-academics summary { display: flex; align-items: baseline; gap: 8px; cursor: pointer; padding: 10px 0; font-size: 13px; font-weight: 700; list-style: none; }
+.ms-academics summary::-webkit-details-marker { display: none; }
+.ms-academics summary::after { content: '▾'; margin-left: auto; color: var(--muted-2); }
+.ms-academics[open] summary::after { content: '▴'; }
+.ms-academics summary small { font-weight: 500; font-size: 11px; color: #4d6884; }
+.ms-mod { padding: 8px 0; border-top: 1px solid var(--line2); }
+.ms-mod-head { display: flex; align-items: baseline; gap: 8px; font-size: 13px; }
+.ms-mod-head code { font-size: 11px; color: var(--muted); }
+.ms-mod-head span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ms-mod-sub { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+.ms-mod-sub span { font-size: 11px; background: var(--paper); border-radius: 6px; padding: 2px 7px; color: var(--muted); }
+.ms-mod-sub span.soon { background: #e6ecf3; color: #4d6884; font-weight: 700; }
+.ms-mod-sub span.due { background: #f6ecd6; color: #a07320; }
+.ms-avail { display: flex; flex-direction: column; gap: 8px; }
+.ms-avail-grid { display: grid; grid-template-columns: 112px repeat(6, minmax(0, 1fr)); gap: 4px; align-items: center; }
+.ms-avail-row { display: contents; }
+.ms-avail-day { font-size: 11px; font-weight: 700; color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: 0.05em; }
+.ms-avail-slot strong { display: block; font-size: 12.5px; }
+.ms-avail-slot small { font-size: 10.5px; color: var(--muted); }
+.ms-avail-cell { height: 36px; border-radius: 8px; border: 1px solid var(--line); background: var(--white); display: grid; place-items: center; color: #fff; cursor: pointer; }
+.ms-avail-cell:hover { border-color: var(--green-bright); }
+.ms-avail-cell.on { background: var(--green); border-color: var(--green); }
+.ms-avail-cell svg { width: 13px; height: 13px; }
+@media (max-width: 800px) {
+  .ms-avail-grid { grid-template-columns: 72px repeat(6, minmax(0, 1fr)); }
+  .ms-avail-slot small { display: none; }
+}

@@ -42,11 +42,11 @@ export function CareersModule({ toast }) {
   const tabs = [
     { key: 'overview', label: 'Overview' },
     { key: 'students', label: 'Students', badge: data.students.length },
-    { key: 'engagement', label: 'EdOS engagement' },
-    { key: 'opportunities', label: 'Employment & opportunities', badge: data.opportunities.filter((o) => !o.closed).length },
+    { key: 'engagement', label: 'Engagement' },
+    { key: 'opportunities', label: 'Opportunities', badge: data.opportunities.filter((o) => !o.closed).length },
     { key: 'risk', label: 'Unemployment risk', badge: atRisk.length, warn: true },
-    { key: 'mentorship', label: 'Alumni mentorship' },
-    { key: 'destinations', label: 'Graduate destinations' },
+    { key: 'mentorship', label: 'Mentorship' },
+    { key: 'destinations', label: 'Destinations' },
   ];
   const go = (t, f = null) => {
     setFilter(f);
@@ -491,15 +491,21 @@ function Risk({ data, toast }) {
                   <td>
                     <RiskPill risk={s.risk} />
                   </td>
-                  <td style={{ fontSize: 12.5, maxWidth: 320 }}>{s.risk.reasons.join(' · ')}</td>
+                  <td>
+                    <div className="cr-why">
+                      {s.risk.reasons.map((r) => (
+                        <span key={r}>{r}</span>
+                      ))}
+                    </div>
+                  </td>
                   <td style={{ fontSize: 12.5 }}>
                     {last(s) ? (
-                      <>
-                        {interventionMeta(last(s).type).label}{' '}
+                      <div className="cr-support-cell">
+                        <span>{interventionMeta(last(s).type).label}</span>
                         <Pill tone={last(s).status === 'open' ? 'gold' : last(s).status === 'declined' ? 'coral' : 'teal'}>
-                          {last(s).status === 'open' ? 'sent' : last(s).status}
+                          {last(s).status === 'open' ? 'Sent' : last(s).status}
                         </Pill>
-                      </>
+                      </div>
                     ) : (
                       <span className="muted">None yet</span>
                     )}

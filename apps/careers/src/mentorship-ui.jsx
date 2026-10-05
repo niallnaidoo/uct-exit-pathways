@@ -6,6 +6,7 @@
 import { useRef } from 'react';
 import { Icon, Avatar } from './atoms.jsx';
 import { menteeShortName } from './mentorship-model.js';
+import { DAYS, SLOTS, slotKey, availabilityText, sharedSlots } from '../../../packages/bridge/vocab.js';
 import './mentorship.css';
 
 /** Multi-select chips. */
@@ -173,6 +174,15 @@ export function MentorProfileCard({ mentor, footer, showContact }) {
             <span key={p}>{p}</span>
           ))}
       </div>
+      {mentor.availability?.length > 0 && (
+        <div className="ms-free">
+          <Icon.Clock />
+          <span>
+            <strong>Usually free: </strong>
+            {availabilityText(mentor.availability)}
+          </span>
+        </div>
+      )}
       {(mentor.linkedin || (showContact && mentor.email)) && (
         <div className="ms-profile-links">
           {mentor.linkedin && (
@@ -189,7 +199,8 @@ export function MentorProfileCard({ mentor, footer, showContact }) {
 }
 
 /** A student as a mentor sees them — anonymised until the match is agreed. */
-export function MenteeCard({ mentee, match, footer, full }) {
+export function MenteeCard({ mentee, match, footer, full, mentorAvailability, academics }) {
+  const both = sharedSlots(mentorAvailability, mentee.availability);
   const name = full
     ? `${mentee.firstName} ${mentee.lastName ?? ''}`.trim()
     : menteeShortName({ firstName: mentee.firstName, lastName: mentee.lastInitial ?? mentee.lastName });
@@ -224,13 +235,22 @@ export function MenteeCard({ mentee, match, footer, full }) {
           ))}
         </div>
       )}
-      {full && (mentee.email || mentee.availability || mentee.accessNeeds) && (
+      {(both.length > 0 || (full && mentee.availability?.length > 0)) && (
+        <div className="ms-free">
+          <Icon.Clock />
+          <span>
+            {both.length ? <strong>You’re both free: </strong> : <strong>Free: </strong>}
+            {availabilityText(both.length ? both : mentee.availability)}
+          </span>
+        </div>
+      )}
+      {full && (mentee.email || mentee.accessNeeds) && (
         <div className="ms-mentee-contact">
           {mentee.email && <a href={`mailto:${mentee.email}`}>{mentee.email}</a>}
-          {mentee.availability && <span>Available: {mentee.availability}</span>}
           {mentee.accessNeeds && <span>Access needs: {mentee.accessNeeds}</span>}
         </div>
       )}
+      {full && <MarksAndTests academics={academics} name={mentee.firstName} />}
       {footer}
     </div>
   );
@@ -258,3 +278,89 @@ export const fmtAgo = (iso) => {
   const d = Math.round(h / 24);
   return d === 1 ? 'yesterday' : `${d} days ago`;
 };
+
+/**
+ * The mentee's subjects, marks and upcoming tests — shared from EdOS by the
+ * student, for their mentor only.
+ */
+export function MarksAndTests({ academics, name }) {
+  const today = new Date().toISOString().slice(0, 10);
+  if (!academics?.shared)
+    return <div className="ms-academics off">{name} hasn’t shared marks &amp; tests from EdOS.</div>;
+  const days = (d) => Math.ceil((new Date(`${d}T12:00:00`) - Date.now()) / 86400000);
+  return (
+    <details className="ms-academics">
+      <summary>
+        <span>Marks &amp; tests</span>
+        <small>shared from EdOS</small>
+      </summary>
+      {academics.modules.map((m) => {
+        const next = m.assessments.find((a) => a.date >= today);
+        const due = m.assessments.filter((a) => a.date < today && a.mark == null).length;
+        return (
+          <div key={m.code} className="ms-mod">
+            <div className="ms-mod-head">
+              <code>{m.code}</code>
+              <span>{m.name}</span>
+              <strong>{m.mark}%</strong>
+            </div>
+            <div className="ms-mod-sub">
+              {next ? (
+                <span className={days(next.date) <= 7 ? 'soon' : ''}>
+                  {next.label} in {days(next.date)} days
+                </span>
+              ) : (
+                <span>No tests coming up</span>
+              )}
+              {m.assessments
+                .filter((a) => a.mark != null)
+                .map((a) => (
+                  <span key={a.label}>
+                    {a.label} {a.mark}%
+                  </span>
+                ))}
+              {due > 0 && <span className="due">{due} mark{due > 1 ? 's' : ''} outstanding</span>}
+            </div>
+          </div>
+        );
+      })}
+    </details>
+  );
+}
+
+/** Day × time-slot picker (same grid students use in EdOS). */
+export function AvailabilityGrid({ value = [], onChange }) {
+  const toggle = (k) => onChange(value.includes(k) ? value.filter((x) => x !== k) : [...value, k]);
+  return (
+    <div className="ms-avail">
+      <div className="ms-avail-grid">
+        <span />
+        {DAYS.map((d) => (
+          <span key={d} className="ms-avail-day">
+            {d}
+          </span>
+        ))}
+        {SLOTS.map((s) => (
+          <div key={s.key} className="ms-avail-row">
+            <span className="ms-avail-slot">
+              <strong>{s.label}</strong>
+              <small>{s.time}</small>
+            </span>
+            {DAYS.map((d) => {
+              const k = slotKey(d, s.key);
+              const on = value.includes(k);
+              return (
+                <button type="button" key={k} className={`ms-avail-cell ${on ? 'on' : ''}`} aria-pressed={on} aria-label={`${d} ${s.label}`} onClick={() => toggle(k)}>
+                  {on && <Icon.Check />}
+                </button>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      <div className="ms-field-hint" style={{ margin: 0 }}>
+        {value.length ? availabilityText(value) : 'Tap the times you’re usually free.'}
+      </div>
+    </div>
+  );
+}

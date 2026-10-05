@@ -240,6 +240,7 @@ function publicMentee(t) {
     goals: t.goals,
     languages: t.languages,
     meetingFormat: t.meetingFormat,
+    availability: t.availability,
   };
 }
 
@@ -293,6 +294,8 @@ export const getMentorPortal = (id, token) =>
           mentee: agreed ? t : publicMentee(t),
           meetings: Object.values(m.meetings).filter((mt) => mt.matchId === x.id),
           messages: m.messages.filter((msg) => msg.matchId === x.id),
+          // Only for agreed mentorships, and only if the student chose to share.
+          academics: agreed ? m.academics[x.id] ?? null : null,
         };
       })
       .filter(Boolean);

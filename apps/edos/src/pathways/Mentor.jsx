@@ -5,9 +5,10 @@
  * from the Careers Service platform; the bus carries the conversation.
  */
 import { useState } from 'react';
-import { useEdos, requestMentor, respondToOffer, sendMessage, bookMeeting } from './store.js';
-import { Icon, Initials, Synced, Section } from './ui.jsx';
-import { INDUSTRIES, SKILLS, LANGUAGES, MILESTONES } from '../../../../packages/bridge/vocab.js';
+import { Link } from 'react-router-dom';
+import { useEdos, requestMentor, respondToOffer, sendMessage, bookMeeting, shareAcademics } from './store.js';
+import { Icon, Initials, Synced, Section, AvailabilityPicker } from './ui.jsx';
+import { INDUSTRIES, SKILLS, LANGUAGES, MILESTONES, availabilityText, sharedSlots } from '../../../../packages/bridge/vocab.js';
 import { timeAgo } from '../../../../packages/bridge/describe.js';
 
 export function Mentor() {
@@ -26,7 +27,7 @@ export function Mentor() {
       {v.match ? (
         <Active v={v} />
       ) : v.offers.length ? (
-        <Offers offers={v.offers} />
+        <Offers offers={v.offers} mine={v.mentorRequest?.availability} />
       ) : v.mentorRequest ? (
         <Waiting v={v} />
       ) : (
@@ -44,11 +45,11 @@ function RequestForm({ v }) {
     goals: '',
     languages: ['English'],
     meetingFormat: 'Either',
-    availability: '',
+    availability: [],
     accessNeeds: '',
   });
   const toggle = (k, x) => setF({ ...f, [k]: f[k].includes(x) ? f[k].filter((y) => y !== x) : [...f[k], x] });
-  const ready = f.careerInterests.length && f.skillsWanted.length && f.goals.trim().length >= 10;
+  const ready = f.careerInterests.length && f.skillsWanted.length && f.goals.trim().length >= 10 && f.availability.length;
   return (
     <div className="ed-grid-side">
       <div className="card ed-form-card">
@@ -80,20 +81,16 @@ function RequestForm({ v }) {
             </button>
           ))}
         </div>
-        <div className="ed-row">
-          <label className="ed-field">
-            <span>Meet</span>
-            <select className="ed-input" value={f.meetingFormat} onChange={(e) => setF({ ...f, meetingFormat: e.target.value })}>
-              <option>Either</option>
-              <option>Online</option>
-              <option>In person</option>
-            </select>
-          </label>
-          <label className="ed-field">
-            <span>When are you usually free?</span>
-            <input className="ed-input" value={f.availability} onChange={(e) => setF({ ...f, availability: e.target.value })} />
-          </label>
-        </div>
+        <div className="ed-step-label">When are you usually free?</div>
+        <AvailabilityPicker value={f.availability} onChange={(availability) => setF({ ...f, availability })} />
+        <label className="ed-field" style={{ maxWidth: 220 }}>
+          <span>Meet</span>
+          <select className="ed-input" value={f.meetingFormat} onChange={(e) => setF({ ...f, meetingFormat: e.target.value })}>
+            <option>Either</option>
+            <option>Online</option>
+            <option>In person</option>
+          </select>
+        </label>
         <div className="ed-form-foot">
           <Synced>Goes to the alumni mentors who fit</Synced>
           <button className="btn btn--accent" disabled={!ready} onClick={() => requestMentor(f)}>
@@ -169,7 +166,7 @@ function MentorCard({ m, footer, showContact }) {
   );
 }
 
-function Offers({ offers }) {
+function Offers({ offers, mine }) {
   return (
     <>
       <p className="t-body" style={{ marginTop: 0 }}>
@@ -182,6 +179,16 @@ function Offers({ offers }) {
             key={o.id}
             m={o.mentor}
             footer={
+              <>
+                {sharedSlots(mine, o.mentor.availability).length > 0 && (
+                  <div className="ed-overlap">
+                    <Icon name="clock" size={13} /> You’re both free: {availabilityText(sharedSlots(mine, o.mentor.availability))}
+                  </div>
+                )}
+                <p className="t-meta" style={{ margin: 0 }}>
+                  Accepting shares your subjects, marks and upcoming tests with {o.mentor.firstName} only, so they can
+                  help you plan. You can stop sharing any time.
+                </p>
               <div className="ed-opp-actions">
                 <button className="btn btn--ghost btn--sm" onClick={() => respondToOffer(o.id, false, 'Not the right fit')}>
                   Not for me
@@ -190,6 +197,7 @@ function Offers({ offers }) {
                   Accept {o.mentor.firstName} as my mentor
                 </button>
               </div>
+              </>
             }
           />
         ))}
@@ -277,6 +285,31 @@ function Active({ v }) {
       </div>
       <aside>
         <MentorCard m={x.mentor} showContact />
+        <div className="card ed-form-card ed-shared" style={{ marginTop: 14 }}>
+          <div className="t-eyebrow">Shared with {x.mentor.firstName}</div>
+          {x.academics?.shared ? (
+            <>
+              <p className="t-body" style={{ margin: 0 }}>
+                Your subjects, marks and upcoming tests — so you can plan around tests together.
+              </p>
+              <Link to="/student/marks" className="btn btn--ghost btn--sm">
+                View my marks &amp; tests <Icon name="arrow" size={12} />
+              </Link>
+              <button className="ed-link-btn" onClick={() => shareAcademics(x.id, false)}>
+                Stop sharing
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="t-body" style={{ margin: 0 }}>
+                {x.mentor.firstName} can’t see your marks and tests. Sharing helps them plan sessions around your tests.
+              </p>
+              <button className="btn btn--accent btn--sm" onClick={() => shareAcademics(x.id, true)}>
+                Share my marks &amp; tests
+              </button>
+            </>
+          )}
+        </div>
         <div className="card ed-form-card" style={{ marginTop: 14 }}>
           <div className="t-eyebrow">Your programme</div>
           <ol className="ed-milestones">

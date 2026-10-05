@@ -40,8 +40,9 @@ Source of truth: `packages/bridge/contract.js`. Every event has the envelope:
 | `pathway.declared` | pathways[] (one or more), readiness{}, interests[], note | Track the pathway mix; score unemployment risk |
 | `opportunity.saved` | opportunityId, saved | Measure interest |
 | `application.submitted` | applicationId, opportunityId, attachments{cv, coverLetter, transcript}, answers{linkedin} | Applicant appears in the employer's pipeline |
-| `mentorship.requested` | interests, skills, goals, languages, format | Create a mentee for matching (academic profile already known) |
+| `mentorship.requested` | interests, skills, goals, languages, format, availability["Tue-evening", …] | Create a mentee for matching; free times are matched against mentors' |
 | `mentorship.offer.responded` | matchId, accept | Activate the match (nothing starts until the student agrees) |
+| `mentorship.academics.shared` | matchId, shared, modules[{code, name, mark, assessments[{label, date, weight, mark}]}] | With consent (on accepting), the student's marks & tests go to **that mentor only** — shown on the mentor's mentee card; never in the Careers office views |
 | `intervention.updated` | interventionId, status booked/done/declined | Close the loop on support |
 | `destination.reported` | destination, detail, organisation | Graduate destinations; flag graduates still seeking work |
 

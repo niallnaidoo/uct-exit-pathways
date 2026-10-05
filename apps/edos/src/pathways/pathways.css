@@ -205,3 +205,23 @@
 .ed-file-name { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ed-file-empty { font-size: 13px; color: var(--ink-4); flex: 1; }
 .ed-file-btn { font-size: 12px; font-weight: 600; color: var(--accent-deep); }
+
+/* Availability grid */
+.ed-avail { display: flex; flex-direction: column; gap: 8px; }
+.ed-avail-grid { display: grid; grid-template-columns: 116px repeat(6, minmax(0, 1fr)); gap: 4px; align-items: center; }
+.ed-avail-row { display: contents; }
+.ed-avail-day { font-size: 11px; font-weight: 700; color: var(--ink-3); text-align: center; letter-spacing: 0.06em; text-transform: uppercase; }
+.ed-avail-slot strong { display: block; font-size: 12.5px; }
+.ed-avail-slot small { font-size: 10.5px; color: var(--ink-3); }
+.ed-avail-cell { height: 38px; border-radius: 8px; border: 1px solid rgba(12, 11, 9, 0.1); background: #fff; display: grid; place-items: center; color: #fff; transition: background 0.12s, border-color 0.12s; }
+.ed-avail-cell:hover { border-color: var(--accent); }
+.ed-avail-cell.on { background: var(--ink); border-color: var(--ink); }
+.ed-overlap { display: flex; gap: 6px; align-items: center; font-size: 12.5px; font-weight: 600; color: var(--good); background: var(--pw-employment-bg); border-radius: 8px; padding: 7px 10px; }
+.ed-shared { gap: 10px; }
+.ed-shared .btn { align-self: flex-start; }
+.ed-shared .ed-link-btn { align-self: flex-start; }
+@media (max-width: 860px) {
+  .ed-avail-grid { grid-template-columns: 76px repeat(6, minmax(0, 1fr)); }
+  .ed-avail-slot small { display: none; }
+}
+.ed-positions { font-size: 12px; font-weight: 600; color: var(--accent-deep); }

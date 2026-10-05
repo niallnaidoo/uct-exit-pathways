@@ -73,6 +73,7 @@ export function demoOpportunities() {
       requirements: { cv: true, coverLetter: false, transcript: true, linkedin: true },
     }),
     opp('hollard-articles', 'job', {
+      positions: 6,
       title: 'Candidate Attorney (Articles) 2027',
       organisation: 'Hollard & Ndlovu Attorneys (sample)',
       location: 'Johannesburg',
@@ -83,6 +84,7 @@ export function demoOpportunities() {
       closingDate: inDays(9),
     }),
     opp('ubuntu-media-intern', 'internship', {
+      positions: 4,
       title: 'Brand & Content Internship (6 months)',
       organisation: 'Ubuntu Media Group (sample)',
       location: 'Durban · remote-friendly',
@@ -92,6 +94,7 @@ export function demoOpportunities() {
       value: 'R12 000 / month',
     }),
     opp('health-community', 'job', {
+      positions: 50,
       title: 'Community Service Physiotherapist placements',
       organisation: 'Western Cape Health (sample)',
       summary: 'Placement support and application guidance for 2027 community-service posts.',
@@ -100,6 +103,7 @@ export function demoOpportunities() {
       closingDate: inDays(30),
     }),
     opp('workready', 'workready', {
+      positions: 120,
       title: 'Work-Readiness Bootcamp — November intake',
       organisation: 'UCT Careers Service',
       summary: 'Five days of workplace skills, CV and interview practice, ending in a speed-meet with 20 hiring employers.',
@@ -108,6 +112,7 @@ export function demoOpportunities() {
       value: 'Free · certificate',
     }),
     opp('youth-placement', 'workready', {
+      positions: 200,
       title: '12-month First-Job Placement',
       organisation: 'Youth employment partner network (sample)',
       location: 'Countrywide',
@@ -119,6 +124,7 @@ export function demoOpportunities() {
 
     // ── Further study ──
     opp('uct-hons-cs', 'uct-programme', {
+      positions: 40,
       title: 'BSc (Hons) Computer Science',
       organisation: 'UCT Faculty of Science',
       summary: 'One-year Honours with specialisations in AI, data and systems. Strong industry links.',
@@ -129,6 +135,7 @@ export function demoOpportunities() {
       uct: true,
     }),
     opp('uct-hons-econ', 'uct-programme', {
+      positions: 30,
       title: 'BCom (Hons) Economics',
       organisation: 'UCT School of Economics',
       summary: 'A rigorous Honours year that feeds the Masters in Economics and policy roles.',
@@ -139,6 +146,7 @@ export function demoOpportunities() {
       uct: true,
     }),
     opp('uct-llm', 'uct-programme', {
+      positions: 15,
       title: 'LLM in Human Rights Law',
       organisation: 'UCT Faculty of Law',
       summary: 'Coursework Masters with a clinical litigation component.',
@@ -149,6 +157,7 @@ export function demoOpportunities() {
       uct: true,
     }),
     opp('uct-pgdip', 'uct-programme', {
+      positions: 60,
       title: 'PG Diploma in Management Practice',
       organisation: 'UCT Graduate School of Business',
       summary: 'A one-year management diploma for non-commerce graduates moving into business roles.',
@@ -158,6 +167,7 @@ export function demoOpportunities() {
       uct: true,
     }),
     opp('ext-datasci', 'external-programme', {
+      positions: 25,
       title: 'MSc Data Science (conversion)',
       organisation: 'Partner university, UK (sample)',
       location: 'Online / UK',
@@ -168,6 +178,7 @@ export function demoOpportunities() {
       closingDate: inDays(60),
     }),
     opp('karoo-bursary', 'bursary', {
+      positions: 8,
       title: 'Engineering & Geoscience Postgraduate Bursary',
       organisation: 'Karoo Mining (sample)',
       summary: 'Full fees plus living allowance for Honours/Masters in engineering or geoscience, with vac work.',
@@ -190,6 +201,7 @@ export function demoOpportunities() {
       requirements: { cv: true, coverLetter: true, transcript: true, linkedin: false },
     }),
     opp('cape-futures', 'scholarship', {
+      positions: 5,
       title: 'Cape Futures Leadership Scholarship',
       organisation: 'Cape Futures Trust (sample)',
       summary: 'For postgraduate students with a record of service and leadership. Includes a leadership programme.',
@@ -201,6 +213,7 @@ export function demoOpportunities() {
 
     // ── Start-up & self-discovery ──
     opp('founders', 'venture-support', {
+      positions: 12,
       title: 'Founders Lab — Student Venture Programme',
       organisation: 'UCT innovation hub (sample)',
       summary: '12 weeks of coaching, R50 000 seed grant and a demo day for student and recent-graduate founders.',
@@ -209,6 +222,7 @@ export function demoOpportunities() {
       value: 'R50 000 seed grant',
     }),
     opp('literacy', 'volunteer', {
+      positions: 30,
       title: 'Literacy Tutor — Saturday school',
       organisation: 'Cape Literacy Project (sample)',
       summary: 'Tutor Grade 4–7 learners in reading on Saturday mornings. Great for teaching, psychology and social-impact paths.',
@@ -216,6 +230,7 @@ export function demoOpportunities() {
       value: 'Volunteer · 3 hrs / week',
     }),
     opp('ocean-gap', 'gap', {
+      positions: 10,
       title: 'Coastal Conservation Gap Programme',
       organisation: 'Two Oceans Conservation (sample)',
       location: 'Western Cape coast',
@@ -224,6 +239,7 @@ export function demoOpportunities() {
       value: 'Stipend + accommodation',
     }),
     opp('ngo-fellow', 'volunteer', {
+      positions: 20,
       title: 'Social Impact Fellowship (12 months)',
       organisation: 'Ubuntu Foundation (sample)',
       summary: 'Paid fellowship placing graduates in community NGOs — a year to discover what you care about.',

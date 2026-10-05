@@ -1,5 +1,5 @@
 /** EdOS UI primitives — icons and small shared pieces (EdOS design system). */
-import { pathwayMeta, kindMeta } from '../../../../packages/bridge/vocab.js';
+import { pathwayMeta, kindMeta, DAYS, SLOTS, slotKey, availabilityText } from '../../../../packages/bridge/vocab.js';
 import { daysUntil } from '../../../../packages/bridge/project.js';
 
 const P = {
@@ -82,5 +82,50 @@ export function Synced({ children = 'Shared with the UCT Careers Service' }) {
       <Icon name="link" size={12} />
       {children}
     </span>
+  );
+}
+
+/**
+ * When-are-you-free grid: tap the day × time slots that suit you. Stored as
+ * keys ("Tue-evening") so mentors can be matched on shared free time.
+ */
+export function AvailabilityPicker({ value = [], onChange }) {
+  const toggle = (k) => onChange(value.includes(k) ? value.filter((x) => x !== k) : [...value, k]);
+  return (
+    <div className="ed-avail">
+      <div className="ed-avail-grid" role="grid">
+        <span />
+        {DAYS.map((d) => (
+          <span key={d} className="ed-avail-day">
+            {d}
+          </span>
+        ))}
+        {SLOTS.map((s) => (
+          <div key={s.key} className="ed-avail-row" role="row">
+            <span className="ed-avail-slot">
+              <strong>{s.label}</strong>
+              <small>{s.time}</small>
+            </span>
+            {DAYS.map((d) => {
+              const k = slotKey(d, s.key);
+              const on = value.includes(k);
+              return (
+                <button
+                  type="button"
+                  key={k}
+                  className={`ed-avail-cell ${on ? 'on' : ''}`}
+                  aria-pressed={on}
+                  aria-label={`${d} ${s.label}`}
+                  onClick={() => toggle(k)}
+                >
+                  {on && <Icon name="check" size={13} />}
+                </button>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      <div className="t-meta">{value.length ? availabilityText(value) : 'Tap the times you’re usually free.'}</div>
+    </div>
   );
 }
