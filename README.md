@@ -38,8 +38,8 @@ and [docs/INTEGRATION.md](docs/INTEGRATION.md).
 
 | Sign in as | Try |
 |---|---|
-| **Nomvula** (student, no plan yet) | Exit pathways → choose one or more → Save. Then Opportunities. |
-| **Kagiso** (student) | Home → *Sent to you* → Apply. Marks & tests → upload any PDF to see the transcript charts. |
+| **Nomvula** (student, no plan yet) | Exit pathways → choose one or more → Save. Then Opportunities → *Sent to you*. |
+| **Kagiso** (student) | Opportunities → Apply → follow it under *My applications*. Marks & tests → upload any PDF to see the transcript charts. |
 | **Yusuf** (student, at risk) | Book the support the Careers Service set up. |
 | **Zinhle** (student) | Alumni mentor → accept the offer → send a message. |
 | **Fatima** (graduate) | Tell UCT where you are now. |
