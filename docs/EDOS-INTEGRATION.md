@@ -87,7 +87,25 @@ Everything else in the module is UI and stays as is.
 
 Full list and payloads: `packages/bridge/contract.js` and [INTEGRATION.md](INTEGRATION.md).
 
-## 7. The Careers Service platform
+## 7. Transcript upload — `apps/edos/src/transcript/`
+
+A second, separate drop-in for EdOS's **Marks** page: students upload their UCT
+transcript and see it visualised (average by year with UCT class boundaries,
+results by class, every course with its mark and symbol).
+
+```tsx
+import { TranscriptSection } from './transcript/Transcript';
+<TranscriptSection student={user} current={modules} />
+```
+
+- **CSV** (template downloadable on the page) is parsed for real.
+- **PDF / photo of the official transcript**: needs UCT's transcript template —
+  `simulateFromRecord()` in `transcript.js` is the stand-in; replace it with the
+  parser (or an OCR/extraction service) once the template is available.
+- Stored per student in EdOS only (`saveTranscript`); in EdOS swap for
+  `api.post('/students/:id/transcript')`. Not sent to the Careers Service.
+
+## 8. The Careers Service platform
 
 `apps/careers/` deploys on its own (staff console, employer portal, alumni
 mentor sign-up and dashboards). It sends EdOS: `opportunity.published`,

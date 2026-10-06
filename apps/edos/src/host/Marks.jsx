@@ -6,6 +6,7 @@
 import { useEdos } from '../pathways/store.js';
 import { Synced } from '../pathways/ui.jsx';
 import { nextTest, gradebookSummary } from '../../../../packages/bridge/demo/roster.js';
+import { TranscriptSection } from '../transcript/Transcript.jsx';
 
 const fmt = (d) => new Date(`${d}T12:00:00`).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' });
 const daysTo = (d) => Math.ceil((new Date(`${d}T12:00:00`) - Date.now()) / 86400000);
@@ -51,6 +52,11 @@ export function Marks() {
       </div>
 
       <section className="ed-section">
+        <h2 className="ed-h2">My transcript</h2>
+        <TranscriptSection student={me} current={me.modules} />
+      </section>
+
+      <section className="ed-section">
         <h2 className="ed-h2">Coming up</h2>
         <div className="card ed-upcoming">
           {upcoming.slice(0, 6).map((a) => (
@@ -74,7 +80,7 @@ export function Marks() {
       </section>
 
       <section className="ed-section">
-        <h2 className="ed-h2">Gradebook</h2>
+        <h2 className="ed-h2">This year’s gradebook</h2>
         {me.modules.map((m) => (
           <div key={m.code} className="card ed-gb">
             <div className="ed-gb-head">
