@@ -17,6 +17,7 @@ const GROUPS = [
   {
     label: 'Students — EdOS',
     people: [
+      { email: 'mlfkag001@myuct.ac.za', name: 'Kagiso Molefe', sub: 'BCom Accounting · has a mentor and an offer' },
       { email: 'celnom010@myuct.ac.za', name: 'Nomvula Cele', sub: 'BBusSc Marketing · final year · no plan yet' },
       { email: 'admyus016@myuct.ac.za', name: 'Yusuf Adams', sub: 'BCom Info Systems · at risk' },
       { email: 'ndbzin004@myuct.ac.za', name: 'Zinhle Ndaba', sub: 'LLB · mentor offer waiting' },
@@ -139,6 +140,9 @@ function Login() {
               All demo passwords: <code>{DEMO_PASSWORD}</code>
             </span>
             <a href="./split/">Side-by-side view</a>
+            <a href="https://github.com/niallnaidoo/uct-exit-pathways/issues/new?template=feedback.yml" target="_blank" rel="noreferrer">
+              Give feedback
+            </a>
             <button
               className="lg-link"
               onClick={() => {

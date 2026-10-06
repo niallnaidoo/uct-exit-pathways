@@ -1,0 +1,46 @@
+name: Feedback on the prototype
+description: Tell us what works, what's confusing, and what's missing.
+title: "Feedback: "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for trying UCT Exit Pathways. Screenshots are very welcome — paste them straight into any box.
+  - type: dropdown
+    id: role
+    attributes:
+      label: Which part were you looking at?
+      options:
+        - Student view (EdOS)
+        - Graduate view (EdOS)
+        - Careers Service console
+        - Employer portal
+        - Alumni mentor sign-up / dashboard
+        - Sign-in page
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: worked
+    attributes:
+      label: What works well?
+  - type: textarea
+    id: change
+    attributes:
+      label: What should change, or what's confusing?
+      description: Where were you, what did you expect, what happened?
+    validations:
+      required: true
+  - type: textarea
+    id: missing
+    attributes:
+      label: Anything missing?
+  - type: dropdown
+    id: priority
+    attributes:
+      label: How important is this for the pilot?
+      options:
+        - Must have for the pilot
+        - Nice to have
+        - Later
