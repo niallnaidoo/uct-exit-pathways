@@ -4,6 +4,8 @@
  * plugs in exactly the way it would in the real EdOS repo: its routes go in the
  * router and its nav items go in the sidebar (see ../pathways/index.js).
  */
+import '@fontsource-variable/raleway/wght.css';
+import '@fontsource-variable/raleway/wght-italic.css';
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter, Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';

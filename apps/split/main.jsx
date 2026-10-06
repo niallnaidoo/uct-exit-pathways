@@ -3,6 +3,8 @@
  * an employer) in one window, for demos and tutorial recordings. Each pane is
  * the real app; pick who is signed into each.
  */
+import '@fontsource-variable/raleway/wght.css';
+import '@fontsource-variable/raleway/wght-italic.css';
 import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { setSession, getSession, signIn, DEMO_PASSWORD, STAFF } from '../../packages/demo-auth/session.js';

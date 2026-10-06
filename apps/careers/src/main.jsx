@@ -6,6 +6,8 @@
  * (#/join) and each mentor's private dashboard (#/alumni/:id?t=). Students
  * don't use this app; they live in EdOS.
  */
+import '@fontsource-variable/raleway/wght.css';
+import '@fontsource-variable/raleway/wght-italic.css';
 import { StrictMode, useState, useCallback, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';

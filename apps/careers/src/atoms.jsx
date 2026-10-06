@@ -758,7 +758,7 @@ export function useToast() {
         display: 'flex',
         alignItems: 'center',
         gap: 14,
-        fontFamily: "'Raleway',sans-serif",
+        fontFamily: "'Raleway Variable', 'Raleway',sans-serif",
         fontSize: 12,
         fontWeight: 500,
         padding: '10px 18px',

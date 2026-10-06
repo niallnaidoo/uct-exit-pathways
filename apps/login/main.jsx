@@ -4,6 +4,8 @@
  *   Employer → employer portal · Alumni mentor → mentor dashboard
  * Styled after the EdOS login (pages/Login.tsx). Production = UCT SSO.
  */
+import '@fontsource-variable/raleway/wght.css';
+import '@fontsource-variable/raleway/wght-italic.css';
 import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { signIn, setSession, getSession, clearSession, homeFor, DEMO_PASSWORD, STAFF } from '../../packages/demo-auth/session.js';

@@ -10,14 +10,14 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
-body { font-family: 'Raleway', system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+body { font-family: 'Raleway Variable', 'Raleway', system-ui, sans-serif; background: var(--paper); color: var(--ink); }
 button { font: inherit; cursor: pointer; }
 
 .sc { height: 100vh; display: grid; grid-template-rows: auto minmax(0, 1fr); }
 .sc-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 10px 18px; background: var(--ink); color: #fff; flex-wrap: wrap; }
 .sc-brand { display: flex; align-items: center; gap: 12px; }
 .sc-mark { font-weight: 800; font-size: 12px; background: #fff; color: var(--ink); border-radius: 8px; padding: 6px 7px; }
-.sc-title { font-family: 'Raleway', sans-serif; font-size: 19px; font-weight: 600; }
+.sc-title { font-family: 'Raleway Variable', 'Raleway', sans-serif; font-size: 19px; font-weight: 600; }
 .sc-sub { font-size: 12px; color: rgba(255, 255, 255, 0.6); }
 .sc-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .sc-seg { display: inline-flex; background: rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 3px; }
